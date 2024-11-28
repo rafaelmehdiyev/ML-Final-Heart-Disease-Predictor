@@ -1,0 +1,205 @@
+/* Medical themed colors */
+:root {
+    --medical-blue: #2c6fb0;
+    --medical-light-blue: #edf2f7;
+    --medical-dark-blue: #1a4971;
+    --medical-green: #4caf50;
+    --medical-red: #dc3545;
+    --medical-gray: #6c757d;
+}
+
+/* General styles */
+body {
+    background-color: var(--medical-light-blue);
+}
+
+/* Navbar customization */
+.navbar {
+    background-color: var(--medical-blue) !important;
+    box-shadow: 0 2px 4px rgba(0,0,0,.1);
+}
+
+.navbar-brand {
+    font-weight: 600;
+}
+
+/* Hero section */
+#home {
+    background-color: var(--medical-blue) !important;
+}
+
+/* Card customization */
+.card {
+    border: none;
+    transition: transform 0.2s;
+    box-shadow: 0 4px 6px rgba(0,0,0,.05);
+}
+
+.card:hover {
+    transform: translateY(-5px);
+}
+
+.card-header {
+    border-bottom: 2px solid var(--medical-light-blue);
+}
+
+/* Form styling */
+.form-label {
+    font-weight: 500;
+    color: var(--medical-dark-blue);
+}
+
+.form-control:focus, .form-select:focus {
+    border-color: var(--medical-blue);
+    box-shadow: 0 0 0 0.2rem rgba(44,111,176,.25);
+}
+
+.form-control::placeholder {
+    color: #adb5bd;
+    font-style: italic;
+}
+
+/* Button styling */
+.btn-primary {
+    background-color: var(--medical-blue) !important;
+    border-color: var(--medical-blue) !important;
+}
+
+.btn-primary:hover {
+    background-color: var(--medical-dark-blue) !important;
+    border-color: var(--medical-dark-blue) !important;
+    transform: translateY(-2px);
+    box-shadow: 0 4px 8px rgba(44,111,176,.2);
+}
+
+/* Custom section spacing */
+section {
+    transition: all 0.3s ease;
+}
+
+/* Result section styling */
+#result {
+    opacity: 0;
+    transition: opacity 0.5s ease-in-out;
+}
+
+#result.show {
+    opacity: 1;
+}
+
+/* Progress bar customization */
+.progress {
+    background-color: var(--medical-light-blue);
+    border-radius: 1rem;
+}
+
+.progress-bar {
+    border-radius: 1rem;
+    transition: width 0.6s ease;
+}
+
+/* Example value hints */
+.example-hint {
+    font-size: 0.85rem;
+    color: var(--medical-gray);
+    font-style: italic;
+    margin-top: 0.25rem;
+}
+
+/* Field tooltips */
+.field-info {
+    color: var(--medical-blue);
+    cursor: pointer;
+    margin-left: 0.5rem;
+}
+
+.field-info:hover {
+    color: var(--medical-dark-blue);
+}
+
+/* Footer styling */
+footer {
+    background-color: var(--medical-dark-blue) !important;
+}
+
+footer a:hover {
+    color: var(--medical-light-blue) !important;
+}
+
+/* Animation classes */
+.fade-in {
+    animation: fadeIn 0.5s ease-in;
+}
+
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+        transform: translateY(20px);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0);
+    }
+}
+
+/* Medical icons customization */
+.medical-icon {
+    color: var(--medical-blue);
+}
+
+/* Example card styling */
+.example-card {
+    background-color: rgba(44,111,176,.05);
+    border-left: 4px solid var(--medical-blue);
+}
+
+/* Help text */
+.help-text {
+    color: var(--medical-gray);
+    font-size: 0.9rem;
+    margin-top: 0.25rem;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .card {
+        margin-bottom: 1rem;
+    }
+    
+    .navbar-brand {
+        font-size: 1.1rem;
+    }
+    
+    .display-4 {
+        font-size: 2rem;
+    }
+}
+
+/* Recommendation list styling */
+#recommendationList li {
+    padding: 0.75rem 0;
+    border-bottom: 1px solid #e9ecef;
+}
+
+#recommendationList li:last-child {
+    border-bottom: none;
+}
+
+/* Chart containers */
+#ageDistributionChart, #riskFactorsChart {
+    min-height: 300px;
+    margin: 1rem 0;
+}
+
+/* Alert customization */
+.alert {
+    border-radius: 0.5rem;
+    border: none;
+    box-shadow: 0 2px 4px rgba(0,0,0,.05);
+}
+
+/* Feature list styling */
+.list-unstyled li {
+    margin-bottom: 0.5rem;
+    font-size: 0.95rem;
+}

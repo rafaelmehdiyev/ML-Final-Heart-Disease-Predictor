@@ -1,0 +1,7 @@
+flask>=2.3.3
+numpy>=1.26.0
+pandas>=2.1.0
+scikit-learn>=1.3.0
+joblib>=1.3.2
+matplotlib>=3.8.0
+requests>=2.31.0  # Added for dataset fetching
