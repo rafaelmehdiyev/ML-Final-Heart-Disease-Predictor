@@ -121,11 +121,14 @@
                         <div class="card stats-card h-100">
                             <div class="card-body text-center">
                                 <i class="fas fa-venus-mars stats-icon mb-3"></i>
-                                <h3 class="stat-value" id="genderRatio">-</h3>
+                                <h3 class="stat-value" id="maleToFemale">-</h3>
                                 <p class="stat-label">Male/Female Ratio</p>
                             </div>
                         </div>
                     </div>
+                </div>
+                <div class="chart-container">
+                    <canvas id="overviewChart"></canvas>
                 </div>
             </div>
 
@@ -157,9 +160,9 @@
                     <div class="col-md-6">
                         <div class="card stats-card">
                             <div class="card-body">
-                                <h4 class="mb-4">Age Distribution</h4>
+                                <h4 class="mb-4">Blood Pressure Distribution</h4>
                                 <div class="chart-container">
-                                    <img id="ageDistribution" class="img-fluid" alt="Age Distribution">
+                                    <canvas id="bpChart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -167,9 +170,9 @@
                     <div class="col-md-6">
                         <div class="card stats-card">
                             <div class="card-body">
-                                <h4 class="mb-4">Risk by Age Group</h4>
+                                <h4 class="mb-4">Chest Pain Types</h4>
                                 <div class="chart-container">
-                                    <img id="ageRisk" class="img-fluid" alt="Risk by Age Group">
+                                    <canvas id="cpChart"></canvas>
                                 </div>
                             </div>
                         </div>
@@ -182,37 +185,56 @@
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
     <script>
-        // Fetch and display statistics
         async function fetchStatistics() {
             try {
-                // Fetch basic statistics
-                const basicResponse = await fetch('/api/statistics/basic');
-                const basicData = await basicResponse.json();
-                if (basicData.status === 'success') {
-                    const stats = basicData.data;
-                    
+                const response = await fetch('/api/statistics');
+                const data = await response.json();
+                
+                if (data.status === 'success') {
                     // Update overview cards
-                    document.getElementById('totalPatients').textContent = stats.dataset_stats.total_patients;
-                    document.getElementById('diseaseRate').textContent = stats.dataset_stats.disease_percentage + '%';
-                    document.getElementById('avgAge').textContent = stats.age_stats.mean_age;
-                    document.getElementById('genderRatio').textContent = 
-                        `${stats.gender_stats.male_count}/${stats.gender_stats.female_count}`;
-                }
+                    document.getElementById('totalPatients').textContent = data.dataset_stats.total_patients;
+                    document.getElementById('diseaseRate').textContent = data.dataset_stats.disease_percentage + '%';
+                    document.getElementById('avgAge').textContent = data.age_stats.mean_age;
+                    document.getElementById('maleToFemale').textContent = 
+                        `${data.gender_stats.male_count}:${data.gender_stats.female_count}`;
 
-                // Fetch risk factors
-                const riskResponse = await fetch('/api/statistics/risk_factors');
-                const riskData = await riskResponse.json();
-                if (riskData.status === 'success') {
-                    displayRiskFactors(riskData.data);
-                }
+                    // Update risk factors
+                    displayRiskFactors(data.risk_factors);
+                    
+                    // Create overview chart
+                    const ctx = document.getElementById('overviewChart').getContext('2d');
+                    new Chart(ctx, {
+                        type: 'doughnut',
+                        data: {
+                            labels: ['Healthy', 'Heart Disease'],
+                            datasets: [{
+                                data: [
+                                    data.dataset_stats.healthy_count,
+                                    data.dataset_stats.disease_count
+                                ],
+                                backgroundColor: ['#28a745', '#dc3545']
+                            }]
+                        },
+                        options: {
+                            responsive: true,
+                            maintainAspectRatio: false,
+                            plugins: {
+                                legend: {
+                                    position: 'bottom'
+                                }
+                            }
+                        }
+                    });
 
-                // Fetch plots
-                const plotsResponse = await fetch('/api/statistics/plots');
-                const plotsData = await plotsResponse.json();
-                if (plotsData.status === 'success') {
-                    document.getElementById('correlationHeatmap').src = 'data:image/png;base64,' + plotsData.data.correlation_heatmap;
-                    document.getElementById('ageDistribution').src = 'data:image/png;base64,' + plotsData.data.age_distribution;
-                    document.getElementById('ageRisk').src = 'data:image/png;base64,' + plotsData.data.age_risk;
+                    // Update correlations
+                    if (data.correlations) {
+                        displayCorrelations(data.correlations);
+                    }
+                    
+                    // Create visualizations
+                    createVisualizations(data);
+                } else {
+                    console.error('Error in data:', data.message);
                 }
             } catch (error) {
                 console.error('Error fetching statistics:', error);
@@ -221,60 +243,107 @@
 
         function displayRiskFactors(riskFactors) {
             const container = document.getElementById('riskFactorsContent');
-            container.innerHTML = '';
-
-            // Age Groups
-            const ageGroupsHtml = `
-                <div class="mb-4">
-                    <h5>Risk by Age Group</h5>
-                    ${Object.entries(riskFactors.age_groups).map(([group, risk]) => `
-                        <div class="mb-2">
+            container.innerHTML = ''; // Clear existing content
+            
+            if (!riskFactors) {
+                container.innerHTML = '<p class="text-center">No risk factor data available</p>';
+                return;
+            }
+            
+            // Create sections for each risk factor category
+            const categories = {
+                'blood_pressure': 'Blood Pressure Levels',
+                'chest_pain': 'Chest Pain Types',
+                'gender': 'Gender'
+            };
+            
+            for (const [category, title] of Object.entries(categories)) {
+                const data = riskFactors[category];
+                if (!data) continue;
+                
+                const section = document.createElement('div');
+                section.className = 'mb-4';
+                section.innerHTML = `<h4 class="mb-3">${title}</h4>`;
+                
+                for (const [key, value] of Object.entries(data)) {
+                    const label = key.charAt(0).toUpperCase() + key.slice(1).replace(/_/g, ' ');
+                    const percentage = value.toFixed(1);
+                    
+                    section.innerHTML += `
+                        <div class="mb-3">
                             <div class="d-flex justify-content-between mb-1">
-                                <span>${group}</span>
-                                <span>${risk.toFixed(1)}%</span>
+                                <span>${label}</span>
+                                <span>${percentage}%</span>
                             </div>
                             <div class="progress">
-                                <div class="progress-bar bg-primary" role="progressbar" 
-                                     style="width: ${risk}%" aria-valuenow="${risk}" 
-                                     aria-valuemin="0" aria-valuemax="100"></div>
+                                <div class="progress-bar" role="progressbar" 
+                                     style="width: ${percentage}%" 
+                                     aria-valuenow="${percentage}" 
+                                     aria-valuemin="0" 
+                                     aria-valuemax="100">
+                                </div>
                             </div>
-                        </div>
-                    `).join('')}
-                </div>
-            `;
+                        </div>`;
+                }
+                
+                container.appendChild(section);
+            }
+        }
 
-            // Gender Risk
-            const genderHtml = `
-                <div class="mb-4">
-                    <h5>Risk by Gender</h5>
-                    <div class="mb-2">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Male</span>
-                            <span>${riskFactors.gender.male.toFixed(1)}%</span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-primary" role="progressbar" 
-                                 style="width: ${riskFactors.gender.male}%" 
-                                 aria-valuenow="${riskFactors.gender.male}" 
-                                 aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                    <div class="mb-2">
-                        <div class="d-flex justify-content-between mb-1">
-                            <span>Female</span>
-                            <span>${riskFactors.gender.female.toFixed(1)}%</span>
-                        </div>
-                        <div class="progress">
-                            <div class="progress-bar bg-primary" role="progressbar" 
-                                 style="width: ${riskFactors.gender.female}%" 
-                                 aria-valuenow="${riskFactors.gender.female}" 
-                                 aria-valuemin="0" aria-valuemax="100"></div>
-                        </div>
-                    </div>
-                </div>
-            `;
+        function createVisualizations(data) {
+            if (!data.risk_factors) return;
 
-            container.innerHTML = ageGroupsHtml + genderHtml;
+            // Blood Pressure Distribution
+            if (data.risk_factors.blood_pressure) {
+                const bpCtx = document.getElementById('bpChart').getContext('2d');
+                new Chart(bpCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.risk_factors.blood_pressure),
+                        datasets: [{
+                            label: 'Risk Percentage',
+                            data: Object.values(data.risk_factors.blood_pressure),
+                            backgroundColor: '#0d6efd'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
+
+            // Chest Pain Types
+            if (data.risk_factors.chest_pain) {
+                const cpCtx = document.getElementById('cpChart').getContext('2d');
+                new Chart(cpCtx, {
+                    type: 'bar',
+                    data: {
+                        labels: Object.keys(data.risk_factors.chest_pain),
+                        datasets: [{
+                            label: 'Risk Percentage',
+                            data: Object.values(data.risk_factors.chest_pain),
+                            backgroundColor: '#0d6efd'
+                        }]
+                    },
+                    options: {
+                        responsive: true,
+                        maintainAspectRatio: false,
+                        scales: {
+                            y: {
+                                beginAtZero: true,
+                                max: 100
+                            }
+                        }
+                    }
+                });
+            }
         }
 
         // Initialize statistics on page load

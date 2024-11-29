@@ -225,46 +225,110 @@ def predict():
             'message': f'An unexpected error occurred. Please try again.'
         }), 500
 
-# Statistics API endpoints
-@app.route('/api/statistics/basic', methods=['GET'])
-def get_basic_statistics():
+@app.route('/api/statistics')
+def get_statistics():
     try:
-        stats = HeartDiseaseStatistics()
-        return jsonify(stats.get_basic_stats())
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        # Load the dataset
+        df = pd.read_csv('app/models/data/heart_disease_combined.csv')
+        
+        # Basic dataset statistics
+        total_patients = len(df)
+        disease_count = len(df[df['target'] == 1])
+        healthy_count = len(df[df['target'] == 0])
+        disease_percentage = round((disease_count / total_patients) * 100, 1)
+        
+        # Age statistics
+        mean_age = round(df['age'].mean(), 1)
+        age_data = df['age'].tolist()
+        diseased_ages = df[df['target'] == 1]['age'].tolist()
+        
+        # Gender statistics
+        male_count = len(df[df['sex'] == 1])
+        female_count = len(df[df['sex'] == 0])
+        
+        # Risk factors analysis
+        def calculate_risk_percentage(df, column, labels=None):
+            risk_by_category = df.groupby(column)['target'].agg(['count', 'mean']).round(3)
+            risk_by_category['percentage'] = (risk_by_category['mean'] * 100).round(1)
+            risk_by_category['total_count'] = risk_by_category['count']
+            
+            result = []
+            for category in risk_by_category.index:
+                label = labels.get(category, category) if labels else str(category)
+                result.append({
+                    'category': label,
+                    'risk_percentage': float(risk_by_category.loc[category, 'percentage']),
+                    'count': int(risk_by_category.loc[category, 'total_count'])
+                })
+            return sorted(result, key=lambda x: x['risk_percentage'], reverse=True)
 
-@app.route('/api/statistics/risk_factors', methods=['GET'])
-def get_risk_factors():
-    try:
-        stats = HeartDiseaseStatistics()
-        return jsonify(stats.get_risk_factors())
+        # Define labels for different features
+        cp_labels = {
+            0: 'Typical Angina',
+            1: 'Atypical Angina',
+            2: 'Non-Anginal Pain',
+            3: 'Asymptomatic',
+            4: 'Asymptomatic'  # Map type 4 to Asymptomatic as well
+        }
+        
+        # Clean the chest pain types - map type 4 to type 3 (both are Asymptomatic)
+        df['cp'] = df['cp'].replace(4, 3)
+        
+        sex_labels = {
+            0: 'Female',
+            1: 'Male'
+        }
+        
+        fbs_labels = {
+            0: 'Normal Fasting Blood Sugar',
+            1: 'High Fasting Blood Sugar'
+        }
+        
+        exang_labels = {
+            0: 'No Exercise Angina',
+            1: 'Exercise Angina'
+        }
+        
+        # Calculate risk factors
+        risk_factors = {
+            'chest_pain': calculate_risk_percentage(df, 'cp', cp_labels),
+            'gender': calculate_risk_percentage(df, 'sex', sex_labels),
+            'fasting_blood_sugar': calculate_risk_percentage(df, 'fbs', fbs_labels),
+            'exercise_angina': calculate_risk_percentage(df, 'exang', exang_labels)
+        }
+        
+        # Calculate correlations with target
+        correlations = df.corr()['target'].drop('target')
+        correlations = correlations.sort_values(ascending=False)
+        correlations = {k: round(float(v), 3) for k, v in correlations.items()}
+        
+        return jsonify({
+            'status': 'success',
+            'dataset_stats': {
+                'total_patients': total_patients,
+                'disease_count': disease_count,
+                'healthy_count': healthy_count,
+                'disease_percentage': disease_percentage
+            },
+            'age_stats': {
+                'mean_age': mean_age,
+                'age_data': age_data,
+                'diseased_ages': diseased_ages
+            },
+            'gender_stats': {
+                'male_count': male_count,
+                'female_count': female_count
+            },
+            'risk_factors': risk_factors,
+            'correlations': correlations
+        })
+        
     except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/statistics/correlations', methods=['GET'])
-def get_correlations():
-    try:
-        stats = HeartDiseaseStatistics()
-        return jsonify(stats.get_correlation_analysis())
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/statistics/tests', methods=['GET'])
-def get_statistical_tests():
-    try:
-        stats = HeartDiseaseStatistics()
-        return jsonify(stats.get_statistical_tests())
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
-
-@app.route('/api/statistics/plots', methods=['GET'])
-def get_plots():
-    try:
-        stats = HeartDiseaseStatistics()
-        return jsonify(stats.generate_plots())
-    except Exception as e:
-        return jsonify({'error': str(e)}), 500
+        print(f"Error in get_statistics: {str(e)}")
+        return jsonify({
+            'status': 'error',
+            'message': 'An error occurred while fetching statistics'
+        }), 500
 
 if __name__ == '__main__':
     load_model()
