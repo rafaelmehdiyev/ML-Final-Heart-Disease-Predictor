@@ -653,22 +653,26 @@ function displayRiskFactors(riskFactors) {
     let html = '<div class="row g-4">';
     
     // Helper function to create risk factor cards
-    const createRiskCard = (title, data, icon) => {
+    const createRiskCard = (title, data, icon, translationKey) => {
         if (!data || data.length === 0) return '';
 
         // Map chest pain types to readable names
         const chestPainTypes = {
-            '0': 'Typical Angina',
-            '1': 'Atypical Angina',
-            '2': 'Non-Anginal Pain',
-            '3': 'Asymptomatic'
+            '0': translations[currentLanguage].typicalAngina,
+            '1': translations[currentLanguage].atypicalAngina,
+            '2': translations[currentLanguage].nonAnginalPain,
+            '3': translations[currentLanguage].asymptomatic
         };
         
         const formatCategory = (category, title) => {
-            if (title === 'Chest Pain Types') {
+            if (title === translations[currentLanguage].chestPainTypes) {
                 return chestPainTypes[category] || category;
             }
-            return category;
+            return translations[currentLanguage][category] || category;
+        };
+        
+        const formatBasedOnPatients = (count) => {
+            return translations[currentLanguage].basedOnPatients.replace('{n}', count);
         };
         
         const highestRisk = data[0];
@@ -681,7 +685,7 @@ function displayRiskFactors(riskFactors) {
                     <div class="card-body">
                         <h5 class="card-title d-flex align-items-center mb-4">
                             <i class="fas ${icon} me-2 text-primary"></i>
-                            ${title}
+                            <span data-translate="${translationKey}">${title}</span>
                         </h5>
                         <div class="risk-factors-list">
                             ${data.map(item => `
@@ -704,7 +708,7 @@ function displayRiskFactors(riskFactors) {
                                         </div>
                                     </div>
                                     <small class="text-muted d-block mt-1">
-                                        Based on ${item.count} patients
+                                        ${formatBasedOnPatients(item.count)}
                                     </small>
                                 </div>
                             `).join('')}
@@ -715,36 +719,37 @@ function displayRiskFactors(riskFactors) {
     };
 
     // Create cards for each risk factor
-    html += createRiskCard('Chest Pain Types', riskFactors.chest_pain, 'fa-heartbeat');
-    html += createRiskCard('Blood Sugar Impact', riskFactors.fasting_blood_sugar, 'fa-tint');
-    html += createRiskCard('Exercise Angina', riskFactors.exercise_angina, 'fa-running');
+    html += createRiskCard(translations[currentLanguage].chestPainTypes, riskFactors.chest_pain, 'fa-heartbeat', 'chestPainTypes');
+    html += createRiskCard(translations[currentLanguage].bloodSugarImpact, riskFactors.fasting_blood_sugar, 'fa-tint', 'bloodSugarImpact');
+    html += createRiskCard(translations[currentLanguage].exerciseAnginaStats, riskFactors.exercise_angina, 'fa-running', 'exerciseAnginaStats');
 
     html += '</div>';
     container.innerHTML = html;
+    updatePageTranslations(); // Update translations after adding new content
 }
 
 function displayCorrelations(correlations) {
     const container = document.getElementById('correlationsContent');
     if (!container || !correlations) return;
 
-    // Define readable names for features
+    // Define readable names for features with translation keys
     const featureNames = {
-        'age': 'Age',
-        'ca': 'Number of Major Vessels',
-        'chol': 'Cholesterol Level',
-        'cp': 'Chest Pain Type',
-        'exang': 'Exercise Induced Angina',
-        'fbs': 'Fasting Blood Sugar',
-        'oldpeak': 'ST Depression',
-        'restecg': 'Resting ECG Results',
-        'sex': 'Gender',
-        'slope': 'ST Slope',
-        'thal': 'Thalassemia',
-        'thalach': 'Maximum Heart Rate',
-        'trestbps': 'Resting Blood Pressure'
+        'age': { text: translations[currentLanguage].age, key: 'age' },
+        'ca': { text: translations[currentLanguage].majorVessels, key: 'majorVessels' },
+        'chol': { text: translations[currentLanguage].serumCholesterol, key: 'serumCholesterol' },
+        'cp': { text: translations[currentLanguage].chestPainType, key: 'chestPainType' },
+        'exang': { text: translations[currentLanguage].exerciseAngina, key: 'exerciseAngina' },
+        'fbs': { text: translations[currentLanguage].fastingBloodSugar, key: 'fastingBloodSugar' },
+        'oldpeak': { text: translations[currentLanguage].stDepression, key: 'stDepression' },
+        'restecg': { text: translations[currentLanguage].restingEcg, key: 'restingEcg' },
+        'sex': { text: translations[currentLanguage].gender, key: 'gender' },
+        'slope': { text: translations[currentLanguage].slope, key: 'slope' },
+        'thal': { text: translations[currentLanguage].thalassemia, key: 'thalassemia' },
+        'thalach': { text: translations[currentLanguage].maxHeartRate, key: 'maxHeartRate' },
+        'trestbps': { text: translations[currentLanguage].restingBloodPressure, key: 'restingBloodPressure' }
     };
 
-    // Sort correlations by absolute value to show strongest correlations first
+    // Sort correlations by absolute value
     const sortedCorrelations = Object.entries(correlations)
         .sort((a, b) => Math.abs(b[1]) - Math.abs(a[1]));
 
@@ -753,33 +758,36 @@ function displayCorrelations(correlations) {
             <div class="card-body">
                 <h5 class="card-title mb-4">
                     <i class="fas fa-link text-primary me-2"></i>
-                    Feature Correlations with Heart Disease
+                    <span data-translate="featureCorrelationsWithHeartDisease">Feature Correlations with Heart Disease</span>
                 </h5>
                 <div class="table-responsive">
                     <table class="table table-hover">
                         <thead>
                             <tr>
-                                <th>Feature</th>
-                                <th>Correlation</th>
-                                <th>Impact</th>
+                                <th data-translate="feature">Feature</th>
+                                <th data-translate="correlation">Correlation</th>
+                                <th data-translate="impact">Impact</th>
                             </tr>
                         </thead>
                         <tbody>
                             ${sortedCorrelations.map(([feature, value]) => {
                                 const absValue = Math.abs(value);
-                                let impact = absValue >= 0.3 ? 'Strong' :
-                                           absValue >= 0.2 ? 'Moderate' : 'Weak';
+                                let impact = absValue >= 0.3 ? translations[currentLanguage].strongPositive :
+                                           absValue >= 0.2 ? translations[currentLanguage].moderatePositive :
+                                           value >= 0 ? translations[currentLanguage].weakPositive :
+                                           translations[currentLanguage].weakNegative;
                                 let impactClass = absValue >= 0.3 ? 'text-danger' :
                                                 absValue >= 0.2 ? 'text-warning' : 'text-success';
-                                let direction = value >= 0 ? 'Positive' : 'Negative';
                                 
                                 return `
                                     <tr>
                                         <td>
-                                            <span class="fw-medium">${featureNames[feature]}</span>
+                                            <span class="fw-medium" data-translate="${featureNames[feature].key}">
+                                                ${featureNames[feature].text}
+                                            </span>
                                             <i class="fas fa-info-circle ms-2 text-muted" 
                                                data-bs-toggle="tooltip" 
-                                               title="Technical name: ${feature}">
+                                               title="${feature}">
                                             </i>
                                         </td>
                                         <td>
@@ -788,8 +796,8 @@ function displayCorrelations(correlations) {
                                             </span>
                                         </td>
                                         <td>
-                                            <span class="${impactClass}">
-                                                ${impact} ${direction}
+                                            <span class="${impactClass}" data-translate="${impact.toLowerCase().replace(' ', '')}">
+                                                ${impact}
                                             </span>
                                         </td>
                                     </tr>
@@ -799,28 +807,161 @@ function displayCorrelations(correlations) {
                     </table>
                 </div>
                 <div class="mt-3 text-muted small">
-                    <p><strong>Note:</strong> Correlation values range from -1 to 1:</p>
+                    <p><strong data-translate="correlationNote">Note: Correlation values range from -1 to 1:</strong></p>
                     <ul class="mb-0">
-                        <li>Positive values indicate the feature increases with heart disease risk</li>
-                        <li>Negative values indicate the feature decreases with heart disease risk</li>
-                        <li>Values closer to 0 indicate weaker relationships</li>
+                        <li data-translate="correlationPositive">Positive values indicate the feature increases with heart disease risk</li>
+                        <li data-translate="correlationNegative">Negative values indicate the feature decreases with heart disease risk</li>
+                        <li data-translate="correlationWeak">Values closer to 0 indicate weaker relationships</li>
                     </ul>
                 </div>
             </div>
         </div>
     `;
-
     container.innerHTML = html;
-
-    // Initialize tooltips
-    const tooltips = [].slice.call(container.querySelectorAll('[data-bs-toggle="tooltip"]'));
-    tooltips.map(function (tooltipTrigger) {
-        return new bootstrap.Tooltip(tooltipTrigger);
-    });
+    updatePageTranslations(); // Update translations after adding new content
 }
 
-// Initialize statistics when the page loads
-document.addEventListener('DOMContentLoaded', () => {
+// Language handling
+let currentLanguage = localStorage.getItem('language') || 'en';
+
+function changeLanguage(lang) {
+    currentLanguage = lang;
+    localStorage.setItem('language', lang);
+    document.getElementById('currentLanguage').textContent = lang === 'en' ? 'English' : 'Azərbaycan';
+    updatePageTranslations();
+}
+
+function updatePageTranslations() {
+    // Update all elements with data-translate attribute
+    document.querySelectorAll('[data-translate]').forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[currentLanguage][key]) {
+            element.textContent = translations[currentLanguage][key];
+        }
+    });
+
+    // Update placeholders for input elements
+    document.querySelectorAll('[data-translate-placeholder]').forEach(element => {
+        const key = element.getAttribute('data-translate-placeholder');
+        if (translations[currentLanguage][key]) {
+            element.placeholder = translations[currentLanguage][key];
+        }
+    });
+
+    // Update select options with data-translate attribute
+    document.querySelectorAll('select option[data-translate]').forEach(option => {
+        const key = option.getAttribute('data-translate');
+        if (translations[currentLanguage][key]) {
+            option.textContent = translations[currentLanguage][key];
+        }
+    });
+
+    // Update current language display
+    const currentLangDisplay = document.getElementById('currentLanguage');
+    if (currentLangDisplay) {
+        currentLangDisplay.textContent = currentLanguage === 'en' ? 'English' : 'Azərbaycanca';
+    }
+}
+
+// Initialize language on page load
+document.addEventListener('DOMContentLoaded', function() {
+    // Set initial language
+    changeLanguage(currentLanguage);
+    
+    const form = document.getElementById('predictionForm');
+    
+    if (form) {
+        form.addEventListener('submit', async function(e) {
+            e.preventDefault();
+            
+            // Check if all required fields are filled
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            let firstInvalidField = null;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                    // Add invalid-feedback div if it doesn't exist
+                    if (!field.nextElementSibling?.classList.contains('invalid-feedback')) {
+                        const feedback = document.createElement('div');
+                        feedback.className = 'invalid-feedback';
+                        feedback.textContent = 'This field is required';
+                        field.parentNode.appendChild(feedback);
+                    }
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                firstInvalidField.focus();
+                return;
+            }
+            
+            // Show loading state
+            const submitButton = this.querySelector('button[type="submit"]');
+            const originalButtonText = submitButton.innerHTML;
+            submitButton.innerHTML = '<i class="fas fa-spinner fa-spin me-2"></i>Processing...';
+            submitButton.disabled = true;
+            
+            try {
+                const formData = new FormData(this);
+                const response = await fetch('/predict', {
+                    method: 'POST',
+                    body: formData
+                });
+                
+                const result = await response.json();
+                
+                if (result.status === 'success') {
+                    displayPredictionResult(result);
+                } else {
+                    // Show error in a non-intrusive way
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                    errorDiv.innerHTML = `
+                        <strong>Error:</strong> ${result.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    form.insertAdjacentElement('afterend', errorDiv);
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                // Show error in a non-intrusive way
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                errorDiv.innerHTML = `
+                    <strong>Error:</strong> An error occurred while processing your request.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                form.insertAdjacentElement('afterend', errorDiv);
+            } finally {
+                // Restore button state
+                submitButton.innerHTML = originalButtonText;
+                submitButton.disabled = false;
+            }
+        });
+
+        // Add input event listeners to remove invalid class when user starts typing
+        form.querySelectorAll('[required]').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                    // Remove invalid feedback if it exists
+                    const feedback = this.nextElementSibling;
+                    if (feedback?.classList.contains('invalid-feedback')) {
+                        feedback.remove();
+                    }
+                }
+            });
+        });
+    }
+    
     // Ensure any existing charts are destroyed
     Object.keys(charts).forEach(key => destroyChart(key));
     destroyAgeChart();

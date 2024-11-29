@@ -18,7 +18,7 @@
         <div class="container">
             <a class="navbar-brand d-flex align-items-center" href="#">
                 <i class="fas fa-heartbeat fa-2x me-2"></i>
-                <span>Heart Disease Predictor</span>
+                <span data-translate="heroTitle">Heart Disease Predictor</span>
             </a>
             <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
                 <span class="navbar-toggler-icon"></span>
@@ -27,23 +27,34 @@
                 <ul class="navbar-nav ms-auto">
                     <li class="nav-item">
                         <a class="nav-link" href="#home">
-                            <i class="fas fa-home me-1"></i> Home
+                            <i class="fas fa-home me-1"></i> <span data-translate="home">Home</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#prediction">
-                            <i class="fas fa-stethoscope me-1"></i> Prediction
+                            <i class="fas fa-stethoscope me-1"></i> <span data-translate="prediction">Prediction</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#statistics">
-                            <i class="fas fa-chart-line me-1"></i> Statistics
+                            <i class="fas fa-chart-line me-1"></i> <span data-translate="statistics">Statistics</span>
                         </a>
                     </li>
                     <li class="nav-item">
                         <a class="nav-link" href="#about">
-                            <i class="fas fa-info-circle me-1"></i> About
+                            <i class="fas fa-info-circle me-1"></i> <span data-translate="about">About</span>
                         </a>
+                    </li>
+                    <!-- Language Switcher -->
+                    <li class="nav-item dropdown ms-3">
+                        <a class="nav-link dropdown-toggle" href="#" id="languageDropdown" role="button" data-bs-toggle="dropdown">
+                            <i class="fas fa-globe me-1"></i>
+                            <span id="currentLanguage">English</span>
+                        </a>
+                        <ul class="dropdown-menu dropdown-menu-end">
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('en')">English</a></li>
+                            <li><a class="dropdown-item" href="#" onclick="changeLanguage('az')">Azərbaycanca</a></li>
+                        </ul>
                     </li>
                 </ul>
             </div>
@@ -55,14 +66,14 @@
         <div class="container">
             <div class="row align-items-center">
                 <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-4">Predict Heart Disease Risk</h1>
-                    <p class="lead mb-4">
+                    <h1 class="display-4 fw-bold mb-4" data-translate="heroTitle">Predict Heart Disease Risk</h1>
+                    <p class="lead mb-4" data-translate="heroDescription">
                         Using advanced machine learning to help you understand your heart health better.
                         Get instant risk assessment based on your medical parameters.
                     </p>
                     <a href="#prediction" class="btn btn-light btn-lg px-4">
                         <i class="fas fa-arrow-right me-2"></i>
-                        Start Assessment
+                        <span data-translate="startAssessment">Start Assessment</span>
                     </a>
                 </div>
                 <div class="col-lg-6">
@@ -82,7 +93,7 @@
         <div class="card-header bg-white py-3">
             <h3 class="card-title mb-0">
                 <i class="fas fa-stethoscope text-primary me-2"></i>
-                Medical Assessment
+                <span data-translate="medicalAssessment">Medical Assessment</span>
             </h3>
         </div>
         <div class="card-body">
@@ -93,27 +104,27 @@
                         <div class="parameter-group">
                             <h5 class="text-primary mb-4">
                                 <i class="fas fa-user-circle me-2"></i>
-                                Basic Information
+                                <span data-translate="basicInformation">Basic Information</span>
                             </h5>
                             
                             <div class="mb-4">
-                                <label class="form-label">Age</label>
+                                <label class="form-label" data-translate="age">Age</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
                                     <input type="number" class="form-control" id="age" name="age" required 
-                                           min="20" max="100" placeholder="Enter age">
+                                           min="20" max="100" data-translate-placeholder="enterAge" placeholder="Enter age">
                                 </div>
-                                <small class="text-muted">Valid range: 20-100 years</small>
+                                <small class="text-muted"><span data-translate="validRange">Valid range</span>: 20-100 <span data-translate="years">years</span></small>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Gender</label>
+                                <label class="form-label" data-translate="gender">Gender</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
                                     <select class="form-select" id="sex" name="sex" required>
-                                        <option value="" selected disabled>Select gender</option>
-                                        <option value="1">Male</option>
-                                        <option value="0">Female</option>
+                                        <option value="" selected disabled data-translate="selectGender">Select gender</option>
+                                        <option value="1" data-translate="male">Male</option>
+                                        <option value="0" data-translate="female">Female</option>
                                     </select>
                                 </div>
                             </div>
@@ -125,32 +136,32 @@
                         <div class="parameter-group">
                             <h5 class="text-primary mb-4">
                                 <i class="fas fa-heartbeat me-2"></i>
-                                Heart Conditions
+                                <span data-translate="heartConditions">Heart Conditions</span>
                             </h5>
 
                             <div class="mb-4">
-                                <label class="form-label">Chest Pain Type</label>
+                                <label class="form-label" data-translate="chestPainType">Chest Pain Type</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-heart"></i></span>
                                     <select class="form-select" id="cp" name="cp" required>
-                                        <option value="" selected disabled>Select type</option>
-                                        <option value="0">Typical Angina</option>
-                                        <option value="1">Atypical Angina</option>
-                                        <option value="2">Non-Anginal Pain</option>
-                                        <option value="3">Asymptomatic</option>
+                                        <option value="" selected disabled data-translate="selectType">Select type</option>
+                                        <option value="0" data-translate="typicalAngina">Typical Angina</option>
+                                        <option value="1" data-translate="atypicalAngina">Atypical Angina</option>
+                                        <option value="2" data-translate="nonAnginalPain">Non-Anginal Pain</option>
+                                        <option value="3" data-translate="asymptomatic">Asymptomatic</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Resting Blood Pressure</label>
+                                <label class="form-label" data-translate="restingBloodPressure">Resting Blood Pressure</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-tachometer-alt"></i></span>
                                     <input type="number" class="form-control" id="trestbps" name="trestbps" 
-                                           required min="90" max="200" placeholder="mm Hg">
-                                    <span class="input-group-text">mm Hg</span>
+                                           required min="90" max="200" data-translate-placeholder="mmHg" placeholder="mm Hg">
+                                    <span class="input-group-text" data-translate="mmHg">mm Hg</span>
                                 </div>
-                                <small class="text-muted">Normal range: 90-140 mm Hg</small>
+                                <small class="text-muted"><span data-translate="normalRange">Normal range</span>: 90-140 <span data-translate="mmHg">mm Hg</span></small>
                             </div>
                         </div>
                     </div>
@@ -160,28 +171,28 @@
                         <div class="parameter-group">
                             <h5 class="text-primary mb-4">
                                 <i class="fas fa-vial me-2"></i>
-                                Blood Parameters
+                                <span data-translate="bloodParameters">Blood Parameters</span>
                             </h5>
 
                             <div class="mb-4">
-                                <label class="form-label">Serum Cholesterol</label>
+                                <label class="form-label" data-translate="serumCholesterol">Serum Cholesterol</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-flask"></i></span>
                                     <input type="number" class="form-control" id="chol" name="chol" 
-                                           required min="100" max="600" placeholder="mg/dl">
-                                    <span class="input-group-text">mg/dl</span>
+                                           required min="100" max="600" data-translate-placeholder="mgdl" placeholder="mg/dl">
+                                    <span class="input-group-text" data-translate="mgdl">mg/dl</span>
                                 </div>
-                                <small class="text-muted">Normal range: 125-200 mg/dl</small>
+                                <small class="text-muted"><span data-translate="normalRange">Normal range</span>: 125-200 <span data-translate="mgdl">mg/dl</span></small>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Fasting Blood Sugar</label>
+                                <label class="form-label" data-translate="fastingBloodSugar">Fasting Blood Sugar</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-tint"></i></span>
                                     <select class="form-select" id="fbs" name="fbs" required>
-                                        <option value="" selected disabled>Select level</option>
-                                        <option value="1">> 120 mg/dl</option>
-                                        <option value="0">≤ 120 mg/dl</option>
+                                        <option value="" selected disabled data-translate="selectLevel">Select level</option>
+                                        <option value="1" data-translate="highFastingBloodSugar">High (>120 mg/dl)</option>
+                                        <option value="0" data-translate="normalFastingBloodSugar">Normal (<120 mg/dl)</option>
                                     </select>
                                 </div>
                             </div>
@@ -193,31 +204,31 @@
                         <div class="parameter-group">
                             <h5 class="text-primary mb-4">
                                 <i class="fas fa-wave-square me-2"></i>
-                                ECG Results
+                                <span data-translate="ecgResults">ECG Results</span>
                             </h5>
 
                             <div class="mb-4">
-                                <label class="form-label">Resting ECG Results</label>
+                                <label class="form-label" data-translate="restingEcgResults">Resting ECG Results</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-heartbeat"></i></span>
                                     <select class="form-select" id="restecg" name="restecg" required>
-                                        <option value="" selected disabled>Select result</option>
-                                        <option value="0">Normal</option>
-                                        <option value="1">ST-T Wave Abnormality</option>
-                                        <option value="2">Left Ventricular Hypertrophy</option>
+                                        <option value="" selected disabled data-translate="selectResult">Select result</option>
+                                        <option value="0" data-translate="normal">Normal</option>
+                                        <option value="1" data-translate="sttWaveAbnormality">ST-T Wave Abnormality</option>
+                                        <option value="2" data-translate="leftVentricularHypertrophy">Left Ventricular Hypertrophy</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Maximum Heart Rate</label>
+                                <label class="form-label" data-translate="maximumHeartRate">Maximum Heart Rate</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-procedures"></i></span>
                                     <input type="number" class="form-control" id="thalach" name="thalach" 
-                                           required min="60" max="220" placeholder="BPM">
-                                    <span class="input-group-text">BPM</span>
+                                           required min="60" max="220" data-translate-placeholder="bpm" placeholder="BPM">
+                                    <span class="input-group-text" data-translate="bpm">BPM</span>
                                 </div>
-                                <small class="text-muted">Normal range: 60-220 BPM</small>
+                                <small class="text-muted"><span data-translate="normalRange">Normal range</span>: 60-220 <span data-translate="bpm">BPM</span></small>
                             </div>
                         </div>
                     </div>
@@ -227,40 +238,40 @@
                         <div class="parameter-group">
                             <h5 class="text-primary mb-4">
                                 <i class="fas fa-running me-2"></i>
-                                Exercise Results
+                                <span data-translate="exerciseResults">Exercise Results</span>
                             </h5>
 
                             <div class="mb-4">
-                                <label class="form-label">Exercise Induced Angina</label>
+                                <label class="form-label" data-translate="exerciseInducedAngina">Exercise Induced Angina</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-heart-broken"></i></span>
                                     <select class="form-select" id="exang" name="exang" required>
-                                        <option value="" selected disabled>Select status</option>
-                                        <option value="1">Yes</option>
-                                        <option value="0">No</option>
+                                        <option value="" selected disabled data-translate="selectStatus">Select status</option>
+                                        <option value="1" data-translate="yes">Yes</option>
+                                        <option value="0" data-translate="no">No</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">ST Depression</label>
+                                <label class="form-label" data-translate="stDepression">ST Depression</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-chart-line"></i></span>
                                     <input type="number" class="form-control" id="oldpeak" name="oldpeak" 
-                                           step="0.1" required min="0" max="6.2" placeholder="Enter value">
+                                           step="0.1" required min="0" max="6.2" data-translate-placeholder="enterValue" placeholder="Enter value">
                                 </div>
-                                <small class="text-muted">Induced by exercise relative to rest</small>
+                                <small class="text-muted"><span data-translate="inducedByExercise">Induced by exercise relative to rest</span></small>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">ST Slope</label>
+                                <label class="form-label" data-translate="stSlope">ST Slope</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-angle-double-up"></i></span>
                                     <select class="form-select" id="slope" name="slope" required>
-                                        <option value="" selected disabled>Select type</option>
-                                        <option value="0">Upsloping</option>
-                                        <option value="1">Flat</option>
-                                        <option value="2">Downsloping</option>
+                                        <option value="" selected disabled data-translate="selectType">Select type</option>
+                                        <option value="0" data-translate="upsloping">Upsloping</option>
+                                        <option value="1" data-translate="flat">Flat</option>
+                                        <option value="2" data-translate="downsloping">Downsloping</option>
                                     </select>
                                 </div>
                             </div>
@@ -272,32 +283,32 @@
                         <div class="parameter-group">
                             <h5 class="text-primary mb-4">
                                 <i class="fas fa-flask me-2"></i>
-                                Additional Tests
+                                <span data-translate="additionalTests">Additional Tests</span>
                             </h5>
 
                             <div class="mb-4">
-                                <label class="form-label">Major Vessels (Fluoroscopy)</label>
+                                <label class="form-label" data-translate="majorVessels">Major Vessels (Fluoroscopy)</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-project-diagram"></i></span>
                                     <select class="form-select" id="ca" name="ca" required>
-                                        <option value="" selected disabled>Select count</option>
-                                        <option value="0">0 vessels</option>
-                                        <option value="1">1 vessel</option>
-                                        <option value="2">2 vessels</option>
-                                        <option value="3">3 vessels</option>
+                                        <option value="" selected disabled data-translate="selectCount">Select count</option>
+                                        <option value="0" data-translate="zeroVessels">0 vessels</option>
+                                        <option value="1" data-translate="oneVessel">1 vessel</option>
+                                        <option value="2" data-translate="twoVessels">2 vessels</option>
+                                        <option value="3" data-translate="threeVessels">3 vessels</option>
                                     </select>
                                 </div>
                             </div>
 
                             <div class="mb-4">
-                                <label class="form-label">Thalassemia</label>
+                                <label class="form-label" data-translate="thalassemia">Thalassemia</label>
                                 <div class="input-group">
                                     <span class="input-group-text"><i class="fas fa-vial"></i></span>
                                     <select class="form-select" id="thal" name="thal" required>
-                                        <option value="" selected disabled>Select type</option>
-                                        <option value="1">Normal</option>
-                                        <option value="2">Fixed Defect</option>
-                                        <option value="3">Reversible Defect</option>
+                                        <option value="" selected disabled data-translate="selectType">Select type</option>
+                                        <option value="1" data-translate="normal">Normal</option>
+                                        <option value="2" data-translate="fixedDefect">Fixed Defect</option>
+                                        <option value="3" data-translate="reversibleDefect">Reversible Defect</option>
                                     </select>
                                 </div>
                             </div>
@@ -310,11 +321,11 @@
                     <div class="col-12 text-center">
                         <button type="button" class="btn btn-outline-secondary btn-lg me-3" onclick="fillExampleData()">
                             <i class="fas fa-fill-drip me-2"></i>
-                            Fill Example Data
+                            <span data-translate="fillExample">Fill Example Data</span>
                         </button>
                         <button type="submit" class="btn btn-primary btn-lg">
                             <i class="fas fa-heart me-2"></i>
-                            Predict Risk
+                            <span data-translate="predictRisk">Predict Risk</span>
                         </button>
                     </div>
                 </div>
@@ -325,14 +336,14 @@
 
 <!-- Results Section -->
 <div id="predictionResult" class="mt-5" style="display: none;">
-    <h2 class="mb-4">Prediction Results</h2>
+    <h2 class="mb-4" data-translate="predictionResults">Prediction Results</h2>
     
     <!-- Risk Score Card -->
     <div class="card mb-4">
         <div class="card-body">
             <div class="row align-items-center">
                 <div class="col-md-4 text-center">
-                    <h3 class="mb-0">Probability Score</h3>
+                    <h3 class="mb-0" data-translate="probabilityScore">Probability Score</h3>
                     <div class="display-1 fw-bold mb-0" id="riskScore">-</div>
                 </div>
                 <div class="col-md-8">
@@ -351,7 +362,7 @@
 
     <!-- Key Factors -->
     <div class="mt-4">
-        <h5 class="text-primary mb-3">
+        <h5 class="text-primary mb-3" data-translate="keyRiskFactors">
             <i class="fas fa-list-check me-2"></i>
             Key Risk Factors
         </h5>
@@ -362,7 +373,7 @@
 
     <!-- Recommendations -->
     <div class="mt-4">
-        <h5 class="text-primary mb-3">
+        <h5 class="text-primary mb-3" data-translate="recommendations">
             <i class="fas fa-lightbulb me-2"></i>
             Recommendations
         </h5>
@@ -378,7 +389,7 @@
 <section id="statistics" class="mb-5">
     <div class="card shadow-sm">
         <div class="card-body">
-            <h4 class="card-title mb-4">
+            <h4 class="card-title mb-4" data-translate="statisticsAndInsights">
                 <i class="fas fa-chart-line text-primary me-2"></i>
                 Statistics & Insights
             </h4>
@@ -388,7 +399,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body text-center">
-                            <h6 class="card-title text-muted mb-3">Total Patients</h6>
+                            <h6 class="card-title text-muted mb-3" data-translate="totalPatients">Total Patients</h6>
                             <h3 class="card-text text-primary mb-0" id="totalPatients">1371</h3>
                         </div>
                     </div>
@@ -396,7 +407,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body text-center">
-                            <h6 class="card-title text-muted mb-3">Disease Rate</h6>
+                            <h6 class="card-title text-muted mb-3" data-translate="diseaseRate">Disease Rate</h6>
                             <h3 class="card-text text-danger mb-0" id="diseaseRate">57.1%</h3>
                         </div>
                     </div>
@@ -404,7 +415,7 @@
                 <div class="col-md-4">
                     <div class="card h-100 shadow-sm">
                         <div class="card-body text-center">
-                            <h6 class="card-title text-muted mb-3">Average Age</h6>
+                            <h6 class="card-title text-muted mb-3" data-translate="averageAge">Average Age</h6>
                             <h3 class="card-text text-success mb-0" id="averageAge">54.1</h3>
                         </div>
                     </div>
@@ -416,7 +427,7 @@
                 <div class="col-md-8 mx-auto mb-4">
                     <div class="card">
                         <div class="card-body">
-                            <h5 class="card-title mb-3">Age Distribution and Disease Risk</h5>
+                            <h5 class="card-title mb-3" data-translate="ageDistributionAndDiseaseRisk">Age Distribution and Disease Risk</h5>
                             <div class="chart-container" style="position: relative; height: 300px;">
                                 <canvas id="ageDistributionChart"></canvas>
                             </div>
@@ -428,7 +439,7 @@
             <!-- Risk Factors Section -->
             <div class="card mb-4">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">
+                    <h5 class="card-title mb-3" data-translate="keyRiskFactors">
                         <i class="fas fa-exclamation-triangle text-warning me-2"></i>
                         Key Risk Factors
                     </h5>
@@ -441,7 +452,7 @@
             <!-- Correlations Section -->
             <div class="card">
                 <div class="card-body">
-                    <h5 class="card-title mb-3">
+                    <h5 class="card-title mb-3" data-translate="featureCorrelations">
                         <i class="fas fa-link text-info me-2"></i>
                         Feature Correlations
                     </h5>
@@ -458,7 +469,7 @@
         <section id="about" class="mb-5">
             <div class="card shadow-lg border-0 rounded-3">
                 <div class="card-header bg-white py-3">
-                    <h3 class="card-title mb-0">
+                    <h3 class="card-title mb-0" data-translate="aboutTheProject">
                         <i class="fas fa-info-circle text-primary me-2"></i>
                         About the Project
                     </h3>
@@ -466,22 +477,22 @@
                 <div class="card-body">
                     <div class="row g-4">
                         <div class="col-lg-8">
-                            <h4>How it Works</h4>
-                            <p class="lead">
+                            <h4 data-translate="howItWorks">How it Works</h4>
+                            <p class="lead" data-translate="projectDescription">
                                 Our heart disease prediction system leverages advanced machine learning algorithms
                                 to assess your risk of heart disease based on various medical parameters.
                             </p>
-                            <p>
+                            <p data-translate="projectDescription2">
                                 The system has been trained on extensive medical data and provides predictions
                                 with associated confidence scores to help you understand your heart health better.
                             </p>
                             
                             <div class="alert alert-info mt-4">
-                                <h5 class="alert-heading">
+                                <h5 class="alert-heading" data-translate="importantNotice">
                                     <i class="fas fa-exclamation-circle me-2"></i>
                                     Important Notice
                                 </h5>
-                                <p class="mb-0">
+                                <p class="mb-0" data-translate="importantNoticeDescription">
                                     This tool is for educational and informational purposes only. It should not
                                     be used as a substitute for professional medical advice, diagnosis, or treatment.
                                     Always seek the advice of your physician or other qualified health provider.
@@ -491,27 +502,27 @@
                         <div class="col-lg-4">
                             <div class="card bg-light border-0">
                                 <div class="card-body">
-                                    <h5 class="card-title">Features</h5>
+                                    <h5 class="card-title" data-translate="features">Features</h5>
                                     <ul class="list-unstyled">
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            Instant Risk Assessment
+                                            <span data-translate="instantRiskAssessment">Instant Risk Assessment</span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            Confidence Scoring
+                                            <span data-translate="confidenceScoring">Confidence Scoring</span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            Medical Recommendations
+                                            <span data-translate="medicalRecommendations">Medical Recommendations</span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            Statistical Analysis
+                                            <span data-translate="statisticalAnalysis">Statistical Analysis</span>
                                         </li>
                                         <li class="mb-2">
                                             <i class="fas fa-check-circle text-success me-2"></i>
-                                            User-Friendly Interface
+                                            <span data-translate="userFriendlyInterface">User-Friendly Interface</span>
                                         </li>
                                     </ul>
                                 </div>
@@ -528,13 +539,13 @@
         <div class="container">
             <div class="row">
                 <div class="col-md-6">
-                    <h5 class="mb-3">Heart Disease Predictor</h5>
-                    <p class="mb-0"> 2024 All rights reserved.</p>
+                    <h5 class="mb-3" data-translate="heartDiseasePredictor">Heart Disease Predictor</h5>
+                    <p class="mb-0" data-translate="copyrightNotice"> 2024 All rights reserved.</p>
                 </div>
                 <div class="col-md-6 text-md-end">
                     <div class="mb-2">
-                        <a href="#" class="text-light text-decoration-none me-3">Privacy Policy</a>
-                        <a href="#" class="text-light text-decoration-none">Terms of Service</a>
+                        <a href="#" class="text-light text-decoration-none me-3" data-translate="privacyPolicy">Privacy Policy</a>
+                        <a href="#" class="text-light text-decoration-none" data-translate="termsOfService">Terms of Service</a>
                     </div>
                     <div class="social-links">
                         <a href="#" class="text-light me-3"><i class="fab fa-github"></i></a>
@@ -547,19 +558,19 @@
     </footer>
 
     <!-- Bootstrap JS -->
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <!-- Chart.js -->
-    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- Custom JS -->
-    <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-    <script>
-        // Initialize tooltips
-        var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-        var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-            return new bootstrap.Tooltip(tooltipTriggerEl)
-        })
-        
-        // Form submission and other existing JavaScript code...
-    </script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+<!-- Chart.js -->
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+<!-- Translations -->
+<script src="{{ url_for('static', filename='js/translations.js') }}"></script>
+<!-- Custom JS -->
+<script src="{{ url_for('static', filename='js/main.js') }}"></script>
+<script>
+    // Initialize tooltips
+    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
+    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
+        return new bootstrap.Tooltip(tooltipTriggerEl)
+    })
+</script>
 </body>
 </html>
