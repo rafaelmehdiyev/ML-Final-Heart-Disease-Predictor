@@ -126,6 +126,35 @@ document.addEventListener('DOMContentLoaded', function() {
         form.addEventListener('submit', async function(e) {
             e.preventDefault();
             
+            // Check if all required fields are filled
+            const requiredFields = form.querySelectorAll('[required]');
+            let isValid = true;
+            let firstInvalidField = null;
+
+            requiredFields.forEach(field => {
+                if (!field.value.trim()) {
+                    isValid = false;
+                    field.classList.add('is-invalid');
+                    // Add invalid-feedback div if it doesn't exist
+                    if (!field.nextElementSibling?.classList.contains('invalid-feedback')) {
+                        const feedback = document.createElement('div');
+                        feedback.className = 'invalid-feedback';
+                        feedback.textContent = 'This field is required';
+                        field.parentNode.appendChild(feedback);
+                    }
+                    if (!firstInvalidField) {
+                        firstInvalidField = field;
+                    }
+                } else {
+                    field.classList.remove('is-invalid');
+                }
+            });
+
+            if (!isValid) {
+                firstInvalidField.focus();
+                return;
+            }
+            
             // Show loading state
             const submitButton = this.querySelector('button[type="submit"]');
             const originalButtonText = submitButton.innerHTML;
@@ -144,152 +173,218 @@ document.addEventListener('DOMContentLoaded', function() {
                 if (result.status === 'success') {
                     displayPredictionResult(result);
                 } else {
-                    alert('Error: ' + result.message);
+                    // Show error in a non-intrusive way
+                    const errorDiv = document.createElement('div');
+                    errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                    errorDiv.innerHTML = `
+                        <strong>Error:</strong> ${result.message}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    `;
+                    form.insertAdjacentElement('afterend', errorDiv);
                 }
             } catch (error) {
                 console.error('Error:', error);
-                alert('An error occurred while processing your request.');
+                // Show error in a non-intrusive way
+                const errorDiv = document.createElement('div');
+                errorDiv.className = 'alert alert-danger alert-dismissible fade show mt-3';
+                errorDiv.innerHTML = `
+                    <strong>Error:</strong> An error occurred while processing your request.
+                    <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                `;
+                form.insertAdjacentElement('afterend', errorDiv);
             } finally {
                 // Restore button state
                 submitButton.innerHTML = originalButtonText;
                 submitButton.disabled = false;
             }
         });
+
+        // Add input event listeners to remove invalid class when user starts typing
+        form.querySelectorAll('[required]').forEach(field => {
+            field.addEventListener('input', function() {
+                if (this.value.trim()) {
+                    this.classList.remove('is-invalid');
+                    // Remove invalid feedback if it exists
+                    const feedback = this.nextElementSibling;
+                    if (feedback?.classList.contains('invalid-feedback')) {
+                        feedback.remove();
+                    }
+                }
+            });
+        });
     }
 });
 
 function displayPredictionResult(result) {
-    // Get result container
+    // Get result container and show it
     const resultContainer = document.getElementById('predictionResult');
     if (!resultContainer) return;
-    
-    // Update risk level
-    const riskLevel = document.getElementById('riskLevel');
-    if (riskLevel) {
-        const isHighRisk = result.risk_level === 'High';
-        riskLevel.textContent = result.risk_level;
-        riskLevel.className = 'display-4 mb-3 ' + (isHighRisk ? 'text-danger' : 'text-success');
-    }
-    
-    // Update confidence bar
-    const confidenceBar = document.getElementById('confidenceBar');
-    if (confidenceBar) {
-        const confidenceValue = result.confidence.replace('%', '');
-        confidenceBar.style.width = result.confidence;
-        confidenceBar.textContent = result.confidence;
-        confidenceBar.className = 'progress-bar ' + 
-            (result.risk_level === 'High' ? 'bg-danger' : 'bg-success');
-    }
-    
-    // Risk factor descriptions
-    const riskFactorDescriptions = {
-        'age': 'Age',
-        'sex': 'Gender',
-        'cp': 'Chest Pain Type',
-        'trestbps': 'Resting Blood Pressure',
-        'chol': 'Cholesterol Level',
-        'fbs': 'Fasting Blood Sugar',
-        'restecg': 'Resting ECG Results',
-        'thalach': 'Maximum Heart Rate',
-        'exang': 'Exercise Induced Angina',
-        'oldpeak': 'ST Depression',
-        'slope': 'ST Slope',
-        'ca': 'Number of Major Vessels',
-        'thal': 'Thalassemia',
-        // Engineered features
-        'chol_ratio': 'Cholesterol Ratio',
-        'bmi_approx': 'Body Mass Index (Approximate)',
-        'heart_rate_reserve': 'Heart Rate Reserve',
-        'bp_category': 'Blood Pressure Category',
-        'age_group': 'Age Group'
-    };
+    resultContainer.style.display = 'block';
 
-    // Risk factor explanations
-    const riskFactorExplanations = {
-        'age': 'Higher age is associated with increased cardiovascular risk',
-        'sex': 'Gender can influence heart disease risk patterns',
-        'cp': 'Type and severity of chest pain is a key indicator',
-        'trestbps': 'High blood pressure is a major risk factor',
-        'chol': 'Elevated cholesterol levels increase heart disease risk',
-        'fbs': 'High fasting blood sugar may indicate diabetes risk',
-        'restecg': 'Abnormal ECG results may indicate heart problems',
-        'thalach': 'Maximum heart rate achieved during exercise',
-        'exang': 'Chest pain during exercise is a warning sign',
-        'oldpeak': 'ST depression induced by exercise relative to rest',
-        'slope': 'The slope of the peak exercise ST segment',
-        'ca': 'Number of major vessels colored by fluoroscopy',
-        'thal': 'A blood disorder that affects oxygen delivery',
-        // Engineered features
-        'chol_ratio': 'Ratio indicating balance of cholesterol levels',
-        'bmi_approx': 'Indicator of body composition and overall health',
-        'heart_rate_reserve': 'Difference between max and resting heart rate',
-        'bp_category': 'Classification of blood pressure levels',
-        'age_group': 'Age range category for risk assessment'
-    };
-
-    // Update risk factors
-    const riskFactorsList = document.getElementById('riskFactorsList');
-    if (riskFactorsList && result.top_risk_factors) {
-        const riskFactorsHtml = result.top_risk_factors.map(factor => {
-            const readableName = riskFactorDescriptions[factor] || factor.replace(/_/g, ' ').replace(/\b\w/g, l => l.toUpperCase());
-            const explanation = riskFactorExplanations[factor] || 'A factor in heart disease risk assessment';
-            return `
-                <li class="list-group-item">
-                    <div class="d-flex align-items-start">
-                        <i class="fas fa-exclamation-triangle ${result.risk_level === 'High' ? 'text-danger' : 'text-warning'} me-2 mt-1"></i>
-                        <div>
-                            <strong>${readableName}</strong>
-                            <p class="mb-0 text-muted small">${explanation}</p>
-                        </div>
-                    </div>
-                </li>
-            `;
-        }).join('');
-        riskFactorsList.innerHTML = riskFactorsHtml;
-    }
+    // Convert confidence to number
+    const confidenceValue = parseFloat(result.confidence);
     
-    // Update recommendations
-    const recommendationsList = document.getElementById('recommendationsList');
-    if (recommendationsList) {
-        const recommendations = [];
+    // Update risk score with context
+    const riskScore = document.getElementById('riskScore');
+    if (riskScore) {
+        riskScore.innerHTML = `${confidenceValue.toFixed(1)}<span class="fs-6">%</span>`;
+    }
+
+    // Update progress bar
+    const riskProgressBar = document.getElementById('riskProgressBar');
+    if (riskProgressBar) {
+        riskProgressBar.style.width = `${confidenceValue}%`;
+        riskProgressBar.setAttribute('aria-valuenow', confidenceValue);
         
-        // Add risk-level specific recommendations
+        // Set color based on risk level
         if (result.risk_level === 'High') {
-            recommendations.push(
-                'Schedule an appointment with your healthcare provider',
-                'Monitor your blood pressure and cholesterol regularly',
-                'Consider lifestyle modifications to reduce risk factors',
-                'Follow a heart-healthy diet plan',
-                'Engage in regular physical activity as approved by your doctor'
-            );
+            riskProgressBar.className = 'progress-bar bg-danger';
+        } else if (result.risk_level === 'Moderate') {
+            riskProgressBar.className = 'progress-bar bg-warning';
         } else {
-            recommendations.push(
-                'Maintain your current healthy lifestyle',
-                'Continue regular health check-ups',
-                'Stay active with regular exercise',
-                'Keep following a balanced diet',
-                'Monitor your health metrics periodically'
-            );
+            riskProgressBar.className = 'progress-bar bg-success';
+        }
+    }
+
+    // Update risk level and description
+    const riskLevelElement = document.getElementById('riskLevel');
+    const riskDescription = document.getElementById('riskDescription');
+    const riskAlert = document.getElementById('riskAlert');
+    
+    if (riskLevelElement && riskDescription && riskAlert) {
+        riskLevelElement.textContent = `${result.risk_level} Risk Level`;
+        
+        // Set description and alert class based on risk level
+        let description, alertClass;
+        if (result.risk_level === 'High') {
+            alertClass = 'alert-danger';
+            description = `Based on our model's analysis, there is a ${confidenceValue.toFixed(1)}% probability of heart disease presence. This high percentage suggests significant cardiovascular risk factors that should be evaluated by a healthcare provider.`;
+        } else if (result.risk_level === 'Moderate') {
+            alertClass = 'alert-warning';
+            description = `Based on our model's analysis, there is a ${confidenceValue.toFixed(1)}% probability of heart disease presence. This moderate percentage indicates some risk factors that should be discussed with your healthcare provider.`;
+        } else {
+            alertClass = 'alert-success';
+            description = `Based on our model's analysis, there is a ${confidenceValue.toFixed(1)}% probability of heart disease presence. While this percentage suggests lower risk, continue maintaining a healthy lifestyle and regular check-ups.`;
         }
         
-        recommendationsList.innerHTML = recommendations.map(rec => `
-            <li class="list-group-item">
-                <i class="fas fa-check-circle text-success me-2"></i>
-                ${rec}
-            </li>
-        `).join('');
+        riskAlert.className = `alert mb-0 ${alertClass}`;
+        riskDescription.textContent = description;
     }
-    
-    // Show the result container with a smooth animation
-    resultContainer.style.opacity = '0';
-    resultContainer.style.display = 'block';
-    resultContainer.scrollIntoView({ behavior: 'smooth' });
-    
-    // Fade in animation
-    setTimeout(() => {
-        resultContainer.style.transition = 'opacity 0.5s ease-in-out';
-        resultContainer.style.opacity = '1';
-    }, 0);
+
+    // Update interpretation text
+    const riskInterpretation = document.getElementById('riskInterpretation');
+    if (riskInterpretation) {
+        let interpretation = 'Our machine learning model analyzes multiple risk factors to estimate the probability of heart disease presence. ';
+        
+        if (result.risk_level === 'High') {
+            interpretation += 'A probability of 70% or higher indicates a significant presence of risk factors associated with heart disease. Immediate medical consultation is recommended.';
+        } else if (result.risk_level === 'Moderate') {
+            interpretation += 'A probability between 40-70% suggests moderate risk factors that warrant attention and preventive measures. Consider scheduling a check-up.';
+        } else {
+            interpretation += 'A probability below 40% indicates fewer risk factors, but maintaining a healthy lifestyle is still important for heart health.';
+        }
+        
+        riskInterpretation.textContent = interpretation;
+    }
+
+    // Update key factors
+    const keyFactorsContainer = document.getElementById('keyFactors');
+    if (keyFactorsContainer && result.top_risk_factors && result.top_risk_factors.length > 0) {
+        keyFactorsContainer.innerHTML = ''; // Clear existing factors
+        
+        // Define icons for each factor type
+        const factorIcons = {
+            'age': 'calendar-alt',
+            'sex': 'venus-mars',
+            'cp': 'heart',
+            'trestbps': 'tachometer-alt',
+            'chol': 'flask',
+            'fbs': 'tint',
+            'restecg': 'heartbeat',
+            'thalach': 'heartbeat', // Changed from heart-pulse to heartbeat
+            'exang': 'heart-broken',
+            'oldpeak': 'chart-line',
+            'slope': 'angle-double-up',
+            'ca': 'project-diagram',
+            'thal': 'vial'
+        };
+
+        // Add key risk factors
+        result.top_risk_factors.forEach(factor => {
+            const col = document.createElement('div');
+            col.className = 'col-md-6 col-lg-4 mb-3';
+            
+            // Get the appropriate icon or use a default
+            const icon = factorIcons[factor.factor] || 'exclamation-circle';
+            
+            col.innerHTML = `
+                <div class="card h-100 border-0 bg-light">
+                    <div class="card-body">
+                        <div class="d-flex align-items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-${icon} fa-2x ${result.risk_level === 'High' ? 'text-danger' : result.risk_level === 'Moderate' ? 'text-warning' : 'text-primary'}"></i>
+                            </div>
+                            <div class="flex-grow-1 ms-3">
+                                <h6 class="mb-1">${factor.value}</h6>
+                                <p class="mb-0 text-muted small">${factor.description}</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            `;
+            
+            keyFactorsContainer.appendChild(col);
+        });
+    } else if (keyFactorsContainer) {
+        keyFactorsContainer.innerHTML = `
+            <div class="col-12">
+                <div class="alert alert-info mb-0">
+                    <i class="fas fa-info-circle me-2"></i>
+                    No significant risk factors identified. Continue maintaining a healthy lifestyle.
+                </div>
+            </div>
+        `;
+    }
+
+    // Update recommendations
+    const recommendationsList = document.getElementById('recommendations');
+    if (recommendationsList) {
+        recommendationsList.innerHTML = ''; // Clear existing recommendations
+        
+        // Add recommendations based on risk level and factors
+        const recommendations = [];
+        
+        if (result.risk_level === 'High') {
+            recommendations.push('Schedule an appointment with a cardiologist for a thorough evaluation');
+            recommendations.push('Begin monitoring your blood pressure and heart rate regularly');
+        }
+        
+        // Add general recommendations
+        recommendations.push('Maintain a heart-healthy diet rich in fruits, vegetables, and whole grains');
+        recommendations.push('Engage in regular physical activity (at least 150 minutes per week)');
+        recommendations.push('Keep stress levels in check through relaxation techniques');
+        recommendations.push('Ensure adequate sleep (7-9 hours per night)');
+        
+        // Add factor-specific recommendations
+        if (result.risk_factors) {
+            if (result.risk_factors.chol > 200) {
+                recommendations.push('Work on lowering your cholesterol through diet and exercise');
+            }
+            if (result.risk_factors.trestbps > 140) {
+                recommendations.push('Focus on blood pressure management through lifestyle changes');
+            }
+        }
+        
+        // Add recommendations to the list
+        recommendations.forEach(rec => {
+            const li = document.createElement('li');
+            li.textContent = rec;
+            recommendationsList.appendChild(li);
+        });
+    }
+
+    // Scroll to results
+    resultContainer.scrollIntoView({ behavior: 'smooth', block: 'start' });
 }
 
 // Example data fill function

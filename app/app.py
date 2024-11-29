@@ -188,30 +188,127 @@ def predict():
                 'message': f'Error during prediction: {str(e)}'
             }), 400
         
-        # Calculate risk level and confidence
-        risk_level = "High" if prediction == 1 else "Low"
-        confidence = probability * 100 if prediction == 1 else (1 - probability) * 100
+        # Calculate risk level based on probability
+        confidence = probability * 100  # Convert to percentage
+        if confidence >= 70:
+            risk_level = "High"
+        elif confidence >= 40:
+            risk_level = "Moderate"
+        else:
+            risk_level = "Low"
         
-        # Get feature importance information (if available)
-        try:
-            if hasattr(model, 'feature_importances_'):
-                feature_importance = pd.DataFrame({
-                    'feature': input_df.columns,
-                    'importance': model.feature_importances_
-                }).sort_values('importance', ascending=False)
-                top_factors = feature_importance['feature'].head(3).tolist()
-            else:
-                top_factors = []
-        except Exception as e:
-            print(f"Error getting feature importance: {str(e)}")
-            top_factors = []
+        # Calculate top risk factors based on input values and medical thresholds
+        risk_factors = []
+        
+        # Age risk (adjusted thresholds)
+        if data['age'] >= 65:
+            risk_factors.append(('age', f"Age ({data['age']} years)", "Advanced age significantly increases cardiovascular risk"))
+        elif data['age'] >= 55:
+            risk_factors.append(('age', f"Age ({data['age']} years)", "Age-related risk is becoming significant"))
+            
+        # Blood pressure risk (standard medical thresholds)
+        if data['trestbps'] >= 160:
+            risk_factors.append(('trestbps', f"High Blood Pressure ({data['trestbps']} mm Hg)", "Stage 2 hypertension - significantly increased risk"))
+        elif data['trestbps'] >= 140:
+            risk_factors.append(('trestbps', f"High Blood Pressure ({data['trestbps']} mm Hg)", "Stage 1 hypertension - moderately increased risk"))
+            
+        # Cholesterol risk (standard medical thresholds)
+        if data['chol'] >= 240:
+            risk_factors.append(('chol', f"High Cholesterol ({data['chol']} mg/dl)", "High cholesterol level - increased cardiovascular risk"))
+        elif data['chol'] >= 200:
+            risk_factors.append(('chol', f"Borderline Cholesterol ({data['chol']} mg/dl)", "Borderline high cholesterol level"))
+            
+        # Chest pain type
+        cp_types = {
+            1: "Typical Angina",
+            2: "Atypical Angina",
+            3: "Non-Anginal Pain",
+            4: "Asymptomatic"
+        }
+        if data['cp'] in [1, 2]:
+            risk_factors.append(('cp', f"{cp_types.get(data['cp'], 'Unknown')} (Type {data['cp']})", 
+                               "Presence of angina indicates potential heart issues"))
+            
+        # Exercise induced angina
+        if data['exang'] == 1:
+            risk_factors.append(('exang', "Exercise Induced Angina Present", 
+                               "Chest pain during exercise is a significant cardiac warning sign"))
+            
+        # ST depression
+        if data['oldpeak'] >= 2:
+            risk_factors.append(('oldpeak', f"Severe ST Depression ({data['oldpeak']} mm)", 
+                               "Significant ST depression indicates reduced heart blood flow"))
+        elif data['oldpeak'] >= 1:
+            risk_factors.append(('oldpeak', f"Moderate ST Depression ({data['oldpeak']} mm)", 
+                               "Moderate ST depression may indicate cardiac stress"))
+            
+        # Number of major vessels
+        if data['ca'] > 0:
+            risk_factors.append(('ca', f"Blocked Major Vessels ({data['ca']})", 
+                               f"{data['ca']} major vessel(s) show significant blockage"))
+            
+        # Thalassemia
+        thal_types = {
+            1: "Normal",
+            2: "Fixed Defect",
+            3: "Reversible Defect"
+        }
+        if data['thal'] > 2:
+            risk_factors.append(('thal', f"Abnormal Thalassemia ({thal_types.get(data['thal'], 'Unknown')})", 
+                               "Abnormal blood flow pattern detected"))
+            
+        # Maximum heart rate concerns (age-adjusted)
+        max_hr = 220 - data['age']  # Maximum heart rate formula
+        if data['thalach'] < max_hr * 0.5:
+            risk_factors.append(('thalach', f"Low Max Heart Rate ({data['thalach']} bpm)", 
+                               "Maximum heart rate is significantly below age-adjusted normal range"))
+        elif data['thalach'] > max_hr * 0.9:
+            risk_factors.append(('thalach', f"High Max Heart Rate ({data['thalach']} bpm)", 
+                               "Maximum heart rate is above age-adjusted normal range"))
+            
+        # Resting ECG
+        ecg_types = {
+            0: "Normal",
+            1: "ST-T Wave Abnormality",
+            2: "Left Ventricular Hypertrophy"
+        }
+        if data['restecg'] > 0:
+            risk_factors.append(('restecg', f"{ecg_types.get(data['restecg'], 'Unknown')} ECG", 
+                               "Abnormal resting electrocardiogram results"))
+        
+        # Sort risk factors by importance
+        risk_factor_weights = {
+            'ca': 10,     # Number of major vessels (highest importance)
+            'cp': 9,      # Chest pain type
+            'thal': 8,    # Thalassemia
+            'exang': 7,   # Exercise induced angina
+            'oldpeak': 6, # ST depression
+            'trestbps': 5,# Blood pressure
+            'chol': 4,    # Cholesterol
+            'age': 3,     # Age
+            'thalach': 2, # Maximum heart rate
+            'restecg': 1  # Resting ECG (lowest importance)
+        }
+        
+        # Sort risk factors by their weights
+        risk_factors.sort(key=lambda x: (risk_factor_weights.get(x[0], 0), x[1]), reverse=True)
+        
+        # Take top 5 most significant risk factors
+        top_risk_factors = risk_factors[:5]
         
         response = {
             'prediction': prediction,
-            'probability': float(probability),
+            'probability': probability,
             'risk_level': risk_level,
             'confidence': f"{confidence:.1f}%",
-            'top_risk_factors': top_factors,
+            'top_risk_factors': [
+                {
+                    'factor': factor,
+                    'value': value,
+                    'description': description
+                }
+                for factor, value, description in top_risk_factors
+            ],
             'status': 'success'
         }
         

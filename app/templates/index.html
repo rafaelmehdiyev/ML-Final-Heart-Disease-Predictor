@@ -76,266 +76,303 @@
 
     <!-- Main Content -->
     <div class="container py-5">
-        <!-- Prediction Form Section -->
-        <section id="prediction" class="mb-5">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header bg-white py-3">
-                    <h3 class="card-title mb-0">
-                        <i class="fas fa-clipboard-list text-primary me-2"></i>
-                        Medical Parameters
-                    </h3>
+        <!-- Medical Parameters Section -->
+<section id="prediction" class="mb-5">
+    <div class="card shadow-lg border-0 rounded-3">
+        <div class="card-header bg-white py-3">
+            <h3 class="card-title mb-0">
+                <i class="fas fa-stethoscope text-primary me-2"></i>
+                Medical Assessment
+            </h3>
+        </div>
+        <div class="card-body">
+            <form id="predictionForm" class="needs-validation" novalidate>
+                <div class="row g-4">
+                    <!-- Basic Information -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="parameter-group">
+                            <h5 class="text-primary mb-4">
+                                <i class="fas fa-user-circle me-2"></i>
+                                Basic Information
+                            </h5>
+                            
+                            <div class="mb-4">
+                                <label class="form-label">Age</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-calendar-alt"></i></span>
+                                    <input type="number" class="form-control" id="age" name="age" required 
+                                           min="20" max="100" placeholder="Enter age">
+                                </div>
+                                <small class="text-muted">Valid range: 20-100 years</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Gender</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-venus-mars"></i></span>
+                                    <select class="form-select" id="sex" name="sex" required>
+                                        <option value="" selected disabled>Select gender</option>
+                                        <option value="1">Male</option>
+                                        <option value="0">Female</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Heart Conditions -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="parameter-group">
+                            <h5 class="text-primary mb-4">
+                                <i class="fas fa-heartbeat me-2"></i>
+                                Heart Conditions
+                            </h5>
+
+                            <div class="mb-4">
+                                <label class="form-label">Chest Pain Type</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-heart"></i></span>
+                                    <select class="form-select" id="cp" name="cp" required>
+                                        <option value="" selected disabled>Select type</option>
+                                        <option value="0">Typical Angina</option>
+                                        <option value="1">Atypical Angina</option>
+                                        <option value="2">Non-Anginal Pain</option>
+                                        <option value="3">Asymptomatic</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Resting Blood Pressure</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-tachometer-alt"></i></span>
+                                    <input type="number" class="form-control" id="trestbps" name="trestbps" 
+                                           required min="90" max="200" placeholder="mm Hg">
+                                    <span class="input-group-text">mm Hg</span>
+                                </div>
+                                <small class="text-muted">Normal range: 90-140 mm Hg</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Blood Parameters -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="parameter-group">
+                            <h5 class="text-primary mb-4">
+                                <i class="fas fa-vial me-2"></i>
+                                Blood Parameters
+                            </h5>
+
+                            <div class="mb-4">
+                                <label class="form-label">Serum Cholesterol</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-flask"></i></span>
+                                    <input type="number" class="form-control" id="chol" name="chol" 
+                                           required min="100" max="600" placeholder="mg/dl">
+                                    <span class="input-group-text">mg/dl</span>
+                                </div>
+                                <small class="text-muted">Normal range: 125-200 mg/dl</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Fasting Blood Sugar</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-tint"></i></span>
+                                    <select class="form-select" id="fbs" name="fbs" required>
+                                        <option value="" selected disabled>Select level</option>
+                                        <option value="1">> 120 mg/dl</option>
+                                        <option value="0">≤ 120 mg/dl</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- ECG Results -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="parameter-group">
+                            <h5 class="text-primary mb-4">
+                                <i class="fas fa-wave-square me-2"></i>
+                                ECG Results
+                            </h5>
+
+                            <div class="mb-4">
+                                <label class="form-label">Resting ECG Results</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-heartbeat"></i></span>
+                                    <select class="form-select" id="restecg" name="restecg" required>
+                                        <option value="" selected disabled>Select result</option>
+                                        <option value="0">Normal</option>
+                                        <option value="1">ST-T Wave Abnormality</option>
+                                        <option value="2">Left Ventricular Hypertrophy</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Maximum Heart Rate</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-procedures"></i></span>
+                                    <input type="number" class="form-control" id="thalach" name="thalach" 
+                                           required min="60" max="220" placeholder="BPM">
+                                    <span class="input-group-text">BPM</span>
+                                </div>
+                                <small class="text-muted">Normal range: 60-220 BPM</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Exercise Results -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="parameter-group">
+                            <h5 class="text-primary mb-4">
+                                <i class="fas fa-running me-2"></i>
+                                Exercise Results
+                            </h5>
+
+                            <div class="mb-4">
+                                <label class="form-label">Exercise Induced Angina</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-heart-broken"></i></span>
+                                    <select class="form-select" id="exang" name="exang" required>
+                                        <option value="" selected disabled>Select status</option>
+                                        <option value="1">Yes</option>
+                                        <option value="0">No</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">ST Depression</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-chart-line"></i></span>
+                                    <input type="number" class="form-control" id="oldpeak" name="oldpeak" 
+                                           step="0.1" required min="0" max="6.2" placeholder="Enter value">
+                                </div>
+                                <small class="text-muted">Induced by exercise relative to rest</small>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">ST Slope</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-angle-double-up"></i></span>
+                                    <select class="form-select" id="slope" name="slope" required>
+                                        <option value="" selected disabled>Select type</option>
+                                        <option value="0">Upsloping</option>
+                                        <option value="1">Flat</option>
+                                        <option value="2">Downsloping</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Additional Tests -->
+                    <div class="col-md-6 col-lg-4">
+                        <div class="parameter-group">
+                            <h5 class="text-primary mb-4">
+                                <i class="fas fa-flask me-2"></i>
+                                Additional Tests
+                            </h5>
+
+                            <div class="mb-4">
+                                <label class="form-label">Major Vessels (Fluoroscopy)</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-project-diagram"></i></span>
+                                    <select class="form-select" id="ca" name="ca" required>
+                                        <option value="" selected disabled>Select count</option>
+                                        <option value="0">0 vessels</option>
+                                        <option value="1">1 vessel</option>
+                                        <option value="2">2 vessels</option>
+                                        <option value="3">3 vessels</option>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="mb-4">
+                                <label class="form-label">Thalassemia</label>
+                                <div class="input-group">
+                                    <span class="input-group-text"><i class="fas fa-vial"></i></span>
+                                    <select class="form-select" id="thal" name="thal" required>
+                                        <option value="" selected disabled>Select type</option>
+                                        <option value="1">Normal</option>
+                                        <option value="2">Fixed Defect</option>
+                                        <option value="3">Reversible Defect</option>
+                                    </select>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <div class="card-body">
-                    <form id="predictionForm" class="needs-validation" novalidate>
-                        <div class="row g-4">
-                            <!-- Personal Information -->
-                            <div class="col-md-4">
-                                <div class="card h-100 border-0 bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary mb-4">
-                                            <i class="fas fa-user me-2"></i>
-                                            Personal Information
-                                        </h5>
-                                        <div class="mb-3">
-                                            <label for="age" class="form-label">Age <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Enter your current age in years"></i></label>
-                                            <input type="number" class="form-control" id="age" name="age" required placeholder="e.g., 45">
-                                            <div class="example-hint">Example: 45 years old</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="sex" class="form-label">Sex <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Select your biological sex"></i></label>
-                                            <select class="form-select" id="sex" name="sex" required>
-                                                <option value="" disabled selected>Select sex</option>
-                                                <option value="1">Male</option>
-                                                <option value="0">Female</option>
-                                            </select>
-                                            <div class="example-hint">Example: Male</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
 
-                            <!-- Heart Conditions -->
-                            <div class="col-md-4">
-                                <div class="card h-100 border-0 bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary mb-4">
-                                            <i class="fas fa-heart me-2"></i>
-                                            Heart Conditions
-                                        </h5>
-                                        <div class="mb-3">
-                                            <label for="cp" class="form-label">Chest Pain Type <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Select the type of chest pain you experience"></i></label>
-                                            <select class="form-select" id="cp" name="cp" required>
-                                                <option value="" disabled selected>Select chest pain type</option>
-                                                <option value="0">Typical Angina</option>
-                                                <option value="1">Atypical Angina</option>
-                                                <option value="2">Non-anginal Pain</option>
-                                                <option value="3">Asymptomatic</option>
-                                            </select>
-                                            <div class="example-hint">Example: Typical Angina</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="trestbps" class="form-label">Resting Blood Pressure (mm Hg) <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Your blood pressure when at rest"></i></label>
-                                            <input type="number" class="form-control" id="trestbps" name="trestbps" required placeholder="e.g., 120">
-                                            <div class="example-hint">Example: 120 mm Hg (normal range: 90-140)</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Blood Tests -->
-                            <div class="col-md-4">
-                                <div class="card h-100 border-0 bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary mb-4">
-                                            <i class="fas fa-vial me-2"></i>
-                                            Blood Tests
-                                        </h5>
-                                        <div class="mb-3">
-                                            <label for="chol" class="form-label">Cholesterol (mg/dl) <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Your serum cholesterol level"></i></label>
-                                            <input type="number" class="form-control" id="chol" name="chol" required placeholder="e.g., 200">
-                                            <div class="example-hint">Example: 200 mg/dl (normal range: 125-200)</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="fbs" class="form-label">Fasting Blood Sugar <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Is your fasting blood sugar > 120 mg/dl?"></i></label>
-                                            <select class="form-select" id="fbs" name="fbs" required>
-                                                <option value="" disabled selected>Select fasting blood sugar status</option>
-                                                <option value="1">Greater than 120 mg/dl</option>
-                                                <option value="0">Less than or equal to 120 mg/dl</option>
-                                            </select>
-                                            <div class="example-hint">Example: Less than or equal to 120 mg/dl</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- ECG Results -->
-                            <div class="col-md-4">
-                                <div class="card h-100 border-0 bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary mb-4">
-                                            <i class="fas fa-heartbeat me-2"></i>
-                                            ECG Results
-                                        </h5>
-                                        <div class="mb-3">
-                                            <label for="restecg" class="form-label">Resting ECG <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Resting electrocardiographic results"></i></label>
-                                            <select class="form-select" id="restecg" name="restecg" required>
-                                                <option value="" disabled selected>Select ECG result</option>
-                                                <option value="0">Normal</option>
-                                                <option value="1">ST-T Wave Abnormality</option>
-                                                <option value="2">Left Ventricular Hypertrophy</option>
-                                            </select>
-                                            <div class="example-hint">Example: Normal</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="thalach" class="form-label">Maximum Heart Rate <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Maximum heart rate achieved during exercise"></i></label>
-                                            <input type="number" class="form-control" id="thalach" name="thalach" required placeholder="e.g., 150">
-                                            <div class="example-hint">Example: 150 (normal range: 60-220)</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Exercise Results -->
-                            <div class="col-md-4">
-                                <div class="card h-100 border-0 bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary mb-4">
-                                            <i class="fas fa-running me-2"></i>
-                                            Exercise Results
-                                        </h5>
-                                        <div class="mb-3">
-                                            <label for="exang" class="form-label">Exercise Induced Angina <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Do you experience chest pain during exercise?"></i></label>
-                                            <select class="form-select" id="exang" name="exang" required>
-                                                <option value="" disabled selected>Select angina status</option>
-                                                <option value="1">Yes</option>
-                                                <option value="0">No</option>
-                                            </select>
-                                            <div class="example-hint">Example: No</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="oldpeak" class="form-label">ST Depression <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="ST depression induced by exercise relative to rest"></i></label>
-                                            <input type="number" class="form-control" id="oldpeak" name="oldpeak" step="0.1" required placeholder="e.g., 1.0">
-                                            <div class="example-hint">Example: 1.0 (normal range: 0-4)</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-
-                            <!-- Additional Tests -->
-                            <div class="col-md-4">
-                                <div class="card h-100 border-0 bg-light">
-                                    <div class="card-body">
-                                        <h5 class="card-title text-primary mb-4">
-                                            <i class="fas fa-flask me-2"></i>
-                                            Additional Tests
-                                        </h5>
-                                        <div class="mb-3">
-                                            <label for="slope" class="form-label">Slope of Peak Exercise ST <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="The slope of the peak exercise ST segment"></i></label>
-                                            <select class="form-select" id="slope" name="slope" required>
-                                                <option value="" disabled selected>Select slope type</option>
-                                                <option value="0">Upsloping</option>
-                                                <option value="1">Flat</option>
-                                                <option value="2">Downsloping</option>
-                                            </select>
-                                            <div class="example-hint">Example: Upsloping</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="ca" class="form-label">Number of Major Vessels <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Number of major vessels colored by fluoroscopy"></i></label>
-                                            <select class="form-select" id="ca" name="ca" required>
-                                                <option value="" disabled selected>Select number of vessels</option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                            </select>
-                                            <div class="example-hint">Example: 0 vessels</div>
-                                        </div>
-                                        <div class="mb-3">
-                                            <label for="thal" class="form-label">Thalassemia <i class="fas fa-info-circle field-info" data-bs-toggle="tooltip" title="Blood disorder type"></i></label>
-                                            <select class="form-select" id="thal" name="thal" required>
-                                                <option value="" disabled selected>Select thalassemia type</option>
-                                                <option value="1">Normal</option>
-                                                <option value="2">Fixed Defect</option>
-                                                <option value="3">Reversible Defect</option>
-                                            </select>
-                                            <div class="example-hint">Example: Normal</div>
-                                        </div>
-                                    </div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="text-center mt-4">
-                            <button type="button" class="btn btn-secondary btn-lg me-3" onclick="fillExampleData()">
-                                <i class="fas fa-fill-drip me-2"></i>
-                                Fill Example Data
-                            </button>
-                            <button type="submit" class="btn btn-primary btn-lg px-5 py-3">
-                                <i class="fas fa-heart-pulse me-2"></i>
-                                Predict Risk
-                            </button>
-                        </div>
-                    </form>
+                <!-- Form Actions -->
+                <div class="row mt-4">
+                    <div class="col-12 text-center">
+                        <button type="button" class="btn btn-outline-secondary btn-lg me-3" onclick="fillExampleData()">
+                            <i class="fas fa-fill-drip me-2"></i>
+                            Fill Example Data
+                        </button>
+                        <button type="submit" class="btn btn-primary btn-lg">
+                            <i class="fas fa-heart me-2"></i>
+                            Predict Risk
+                        </button>
+                    </div>
                 </div>
-            </div>
-        </section>
+            </form>
+        </div>
+    </div>
+</section>
 
-        <!-- Results Section -->
-        <div id="predictionResult" style="display: none;" class="mt-5">
-            <div class="card border-0 shadow-sm">
-                <div class="card-body">
-                    <h3 class="card-title text-center mb-4">
-                        <i class="fas fa-heart-pulse me-2"></i>
-                        Heart Disease Risk Assessment
-                    </h3>
-                    
-                    <!-- Risk Level Display -->
-                    <div class="text-center mb-4">
-                        <h4 class="text-muted mb-3">Risk Level</h4>
-                        <div id="riskLevel" class="display-4 mb-3"></div>
-                        <div class="progress" style="height: 25px;">
-                            <div id="confidenceBar" class="progress-bar" role="progressbar" 
-                                 aria-valuenow="0" aria-valuemin="0" aria-valuemax="100">
-                            </div>
-                        </div>
-                        <div id="confidenceText" class="text-muted mt-2">Confidence Score</div>
+<!-- Results Section -->
+<div id="predictionResult" class="mt-5" style="display: none;">
+    <h2 class="mb-4">Prediction Results</h2>
+    
+    <!-- Risk Score Card -->
+    <div class="card mb-4">
+        <div class="card-body">
+            <div class="row align-items-center">
+                <div class="col-md-4 text-center">
+                    <h3 class="mb-0">Probability Score</h3>
+                    <div class="display-1 fw-bold mb-0" id="riskScore">-</div>
+                </div>
+                <div class="col-md-8">
+                    <h4 id="riskLevel" class="mb-3">-</h4>
+                    <div class="progress mb-3" style="height: 20px;">
+                        <div id="riskProgressBar" class="progress-bar" role="progressbar" style="width: 0%" aria-valuenow="0" aria-valuemin="0" aria-valuemax="100"></div>
                     </div>
-                    
-                    <!-- Risk Factors -->
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <h4 class="mb-3">
-                                <i class="fas fa-list-check me-2"></i>
-                                Key Risk Factors
-                            </h4>
-                            <ul id="riskFactorsList" class="list-group">
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Recommendations -->
-                    <div class="row mt-4">
-                        <div class="col-md-12">
-                            <h4 class="mb-3">
-                                <i class="fas fa-clipboard-list me-2"></i>
-                                Recommendations
-                            </h4>
-                            <ul id="recommendationsList" class="list-group">
-                            </ul>
-                        </div>
-                    </div>
-                    
-                    <!-- Disclaimer -->
-                    <div class="mt-4">
-                        <div class="alert alert-info" role="alert">
-                            <i class="fas fa-info-circle me-2"></i>
-                            <strong>Disclaimer:</strong> This prediction is based on machine learning analysis and should not be considered as a medical diagnosis. 
-                            Please consult with a healthcare professional for proper medical advice.
-                        </div>
+                    <div id="riskAlert" class="alert mb-2">
+                        <p id="riskDescription" class="mb-2">-</p>
+                        <p id="riskInterpretation" class="mb-0 small">-</p>
                     </div>
                 </div>
             </div>
         </div>
+    </div>
+
+    <!-- Key Factors -->
+    <div class="mt-4">
+        <h5 class="text-primary mb-3">
+            <i class="fas fa-list-check me-2"></i>
+            Key Risk Factors
+        </h5>
+        <div class="row g-3" id="keyFactors">
+            <!-- Factors will be dynamically added here -->
+        </div>
+    </div>
+
+    <!-- Recommendations -->
+    <div class="mt-4">
+        <h5 class="text-primary mb-3">
+            <i class="fas fa-lightbulb me-2"></i>
+            Recommendations
+        </h5>
+        <div class="alert alert-info mb-0">
+            <ul class="mb-0" id="recommendations">
+                <!-- Recommendations will be dynamically added here -->
+            </ul>
+        </div>
+    </div>
+</div>
 
         <!-- Statistics & Insights Section -->
 <section id="statistics" class="mb-5">
