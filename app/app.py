@@ -74,6 +74,74 @@ def statistics_page():
     """Render the statistics page"""
     return render_template('statistics.html')
 
+@app.route('/ml-process')
+def ml_process():
+    # Model metrics from actual performance
+    metrics = {
+        'accuracy': 78.18,
+        'precision': 89.0,
+        'recall': 82.0,
+        'f1_score': 79.0
+    }
+
+    # Dataset information
+    dataset_info = {
+        'total_samples': 275,
+        'features': 13,
+        'key_features': [
+            {'name': 'Age', 'description': 'Age of the patient (with custom age groups)'},
+            {'name': 'Blood Pressure', 'description': 'Resting blood pressure with categorization'},
+            {'name': 'Cholesterol', 'description': 'Serum cholesterol with level categories'},
+            {'name': 'Heart Rate', 'description': 'Maximum heart rate and heart rate reserve'},
+            {'name': 'Exercise', 'description': 'Exercise intensity metrics'},
+            {'name': 'ECG', 'description': 'Resting electrocardiographic results'}
+        ]
+    }
+
+    # Preprocessing information based on actual implementation
+    preprocessing = {
+        'missing_values': 'Automated data cleaning with custom handling strategies',
+        'scaling': 'StandardScaler for numerical features normalization',
+        'feature_engineering': 'Custom features including age groups, BP categories, and exercise intensity metrics'
+    }
+
+    # Model comparison
+    model_comparison = [
+        {
+            'name': 'SVM (RBF Kernel)',
+            'accuracy': 78.18,
+            'description': 'Selected as final model with ROC AUC of 86.92%'
+        },
+        {
+            'name': 'Cross-validated SVM',
+            'accuracy': 84.24,
+            'description': 'Performance with ±2.20% variation across folds'
+        }
+    ]
+
+    # Training information
+    training = {
+        'train_size': 80,
+        'val_size': 0,  # Using cross-validation instead
+        'test_size': 20,
+        'cross_validation': '5-fold cross-validation with balanced class weights'
+    }
+
+    # Deployment information
+    deployment = {
+        'platform': 'Flask web application (v2.3.3)',
+        'response_time': 'Real-time predictions',
+        'security': 'Input validation and automated data preprocessing'
+    }
+
+    return render_template('ml_process.html',
+                         metrics=metrics,
+                         dataset_info=dataset_info,
+                         preprocessing=preprocessing,
+                         model_comparison=model_comparison,
+                         training=training,
+                         deployment=deployment)
+
 @app.route('/predict', methods=['POST'])
 def predict():
     try:
