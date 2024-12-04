@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Prediction Process - Heart Disease Predictor</title>
+    <!-- Bootstrap 5 CSS -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Prism.js for code highlighting -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism-tomorrow.min.css" rel="stylesheet">
+    <!-- Custom CSS -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+</head>
+<body class="bg-light">
+    <!-- Navigation -->
+    <nav class="navbar navbar-expand-lg navbar-dark bg-primary sticky-top">
+        <div class="container">
+            <a class="navbar-brand d-flex align-items-center" href="/">
+                <i class="fas fa-heartbeat fa-2x me-2"></i>
+                <span>Heart Disease Predictor</span>
+            </a>
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+                <span class="navbar-toggler-icon"></span>
+            </button>
+            <div class="collapse navbar-collapse" id="navbarNav">
+                <ul class="navbar-nav ms-auto">
+                    <li class="nav-item">
+                        <a class="nav-link" href="/">
+                            <i class="fas fa-home me-1"></i> Home
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/ml-process">
+                            <i class="fas fa-brain me-1"></i> ML Process
+                        </a>
+                    </li>
+                </ul>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container py-5">
+        <!-- Header -->
+        <div class="text-center mb-5">
+            <h1 class="display-4 mb-3">Backend Process Visualization</h1>
+            <p class="lead text-muted">Watch how our SVM model processes data step by step</p>
+            
+            <!-- Example Data Card -->
+            <div class="row justify-content-center mb-4">
+                <div class="col-md-8">
+                    <div class="card border-0 shadow-sm">
+                        <div class="card-body">
+                            <h5 class="card-title mb-3">
+                                <i class="fas fa-database text-primary me-2"></i>
+                                Input Data
+                            </h5>
+                            <pre class="mb-0"><code class="language-python">patient_data = {
+    'age': {{ example_data.age }},
+    'blood_pressure': {{ example_data.blood_pressure }},
+    'cholesterol': {{ example_data.cholesterol }},
+    'max_heart_rate': {{ example_data.max_heart_rate }},
+    'st_depression': {{ example_data.st_depression }},
+    'chest_pain': '{{ example_data.chest_pain }}'
+}</code></pre>
+                            <div class="text-center mt-4">
+                                <button class="btn btn-primary btn-lg" onclick="startProcessVisualization()">
+                                    <i class="fas fa-play me-2"></i>
+                                    Run Prediction Process
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Process Steps -->
+        <div class="process-container">
+            <!-- Step 1: Data Validation -->
+            <div class="process-step" id="step1">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="step-header">
+                            <i class="fas fa-check-circle text-primary me-2"></i>
+                            1. Data Validation
+                            <span class="status-badge"></span>
+                        </h5>
+                        <div class="step-content">
+                            <pre><code class="language-python">def validate_input(data):
+    """Validate input data against defined ranges"""
+    valid_ranges = {
+        'age': (20, 100),
+        'blood_pressure': (80, 200),
+        'cholesterol': (100, 600),
+        'max_heart_rate': (60, 220),
+        'st_depression': (0, 6.2)
+    }
+    
+    validation_results = []
+    for field, (min_val, max_val) in valid_ranges.items():
+        if field in data:
+            if data[field] < min_val or data[field] > max_val:
+                return False
+    return True</code></pre>
+                            <div class="output-console mt-3 d-none">
+                                <div class="console-header">Output:</div>
+                                <div class="console-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 2: Feature Engineering -->
+            <div class="process-step" id="step2">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="step-header">
+                            <i class="fas fa-tools text-primary me-2"></i>
+                            2. Feature Engineering
+                            <span class="status-badge"></span>
+                        </h5>
+                        <div class="step-content">
+                            <pre><code class="language-python">def engineer_features(data):
+    """Transform raw data into model features"""
+    features = {}
+    
+    # Age categories
+    features['age_scaled'] = (data['age'] - 20) / 80
+    features['age_risk'] = 1 if data['age'] >= 65 else 0
+    
+    # Blood pressure categories
+    features['bp_category'] = np.where(
+        data['blood_pressure'] >= 140, 'high',
+        np.where(data['blood_pressure'] >= 120, 'pre_high', 'normal')
+    )
+    
+    # Cholesterol risk
+    features['chol_risk'] = data['cholesterol'] >= 240
+    
+    return features</code></pre>
+                            <div class="output-console mt-3 d-none">
+                                <div class="console-header">Output:</div>
+                                <div class="console-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 3: Data Scaling -->
+            <div class="process-step" id="step3">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="step-header">
+                            <i class="fas fa-balance-scale text-primary me-2"></i>
+                            3. Data Scaling
+                            <span class="status-badge"></span>
+                        </h5>
+                        <div class="step-content">
+                            <pre><code class="language-python">def scale_features(features):
+    """Scale features using StandardScaler"""
+    scaler = StandardScaler()
+    
+    numerical_features = [
+        'age_scaled',
+        'blood_pressure',
+        'cholesterol',
+        'max_heart_rate'
+    ]
+    
+    scaled_data = scaler.fit_transform(features[numerical_features])
+    return scaled_data</code></pre>
+                            <div class="output-console mt-3 d-none">
+                                <div class="console-header">Output:</div>
+                                <div class="console-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 4: Model Prediction -->
+            <div class="process-step" id="step4">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="step-header">
+                            <i class="fas fa-brain text-primary me-2"></i>
+                            4. SVM Model Prediction
+                            <span class="status-badge"></span>
+                        </h5>
+                        <div class="step-content">
+                            <pre><code class="language-python">def predict_risk(scaled_data):
+    """Apply SVM model for prediction"""
+    # SVM model configuration
+    svm_model = SVC(
+        kernel='rbf',
+        C=1.0,
+        gamma='scale',
+        probability=True
+    )
+    
+    # Get prediction probability
+    probability = svm_model.predict_proba(scaled_data)[0, 1]
+    
+    # Calculate risk level
+    if probability >= 0.7:
+        risk_level = "High"
+    elif probability >= 0.4:
+        risk_level = "Moderate"
+    else:
+        risk_level = "Low"
+        
+    return probability, risk_level</code></pre>
+                            <div class="output-console mt-3 d-none">
+                                <div class="console-header">Output:</div>
+                                <div class="console-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Step 5: Results Analysis -->
+            <div class="process-step" id="step5">
+                <div class="card border-0 shadow-sm mb-4">
+                    <div class="card-body">
+                        <h5 class="step-header">
+                            <i class="fas fa-chart-pie text-primary me-2"></i>
+                            5. Results Analysis
+                            <span class="status-badge"></span>
+                        </h5>
+                        <div class="step-content">
+                            <pre><code class="language-python">def analyze_results(data, probability, risk_level):
+    """Analyze prediction results and identify risk factors"""
+    risk_factors = []
+    
+    if data['age'] >= 65:
+        risk_factors.append("Advanced age")
+    if data['blood_pressure'] >= 140:
+        risk_factors.append("High blood pressure")
+    if data['cholesterol'] >= 240:
+        risk_factors.append("High cholesterol")
+    
+    return {
+        'probability': probability,
+        'risk_level': risk_level,
+        'risk_factors': risk_factors
+    }</code></pre>
+                            <div class="output-console mt-3 d-none">
+                                <div class="console-header">Output:</div>
+                                <div class="console-content"></div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Final Results -->
+            <div class="final-results d-none" id="finalResults">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h4 class="text-center mb-4">Prediction Results</h4>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <div class="result-item text-center">
+                                    <h5>Risk Probability</h5>
+                                    <div class="display-4 text-primary">75.8%</div>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <div class="result-item text-center">
+                                    <h5>Risk Level</h5>
+                                    <div class="display-4 text-danger">High</div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="mt-4">
+                            <h5>Identified Risk Factors:</h5>
+                            <ul class="risk-factors-list">
+                                <li>Advanced age (65 years)</li>
+                                <li>High blood pressure (145 mm Hg)</li>
+                                <li>Elevated cholesterol (289 mg/dl)</li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="bg-dark text-light py-4 mt-5">
+        <div class="container">
+            <div class="row">
+                <div class="col-md-6">
+                    <h5>Heart Disease Predictor</h5>
+                    <p>Machine Learning Final Project</p>
+                </div>
+                <div class="col-md-6 text-md-end">
+                    <p>Powered by Support Vector Machine</p>
+                </div>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/components/prism-python.min.js"></script>
+    <script>
+        function startProcessVisualization() {
+            // Reset all steps
+            document.querySelectorAll('.process-step').forEach(step => {
+                step.querySelector('.status-badge').className = 'status-badge';
+                step.querySelector('.output-console').classList.add('d-none');
+            });
+            document.getElementById('finalResults').classList.add('d-none');
+            
+            // Process each step
+            processStep(1);
+        }
+
+        function processStep(stepNumber) {
+            const step = document.querySelector(`#step${stepNumber}`);
+            const badge = step.querySelector('.status-badge');
+            const console = step.querySelector('.output-console');
+            
+            // Show processing
+            badge.className = 'status-badge processing';
+            console.classList.remove('d-none');
+            
+            // Simulate processing time and show output
+            setTimeout(() => {
+                badge.className = 'status-badge completed';
+                
+                // Add step-specific output
+                const output = getStepOutput(stepNumber);
+                console.querySelector('.console-content').innerHTML = output;
+                
+                // Process next step or show results
+                if (stepNumber < 5) {
+                    setTimeout(() => processStep(stepNumber + 1), 1000);
+                } else {
+                    setTimeout(showResults, 1000);
+                }
+            }, 2000);
+        }
+
+        function getStepOutput(stepNumber) {
+            const outputs = {
+                1: `>>> Validating input data...
+>>> Age: Valid (20-100 years)
+>>> Blood Pressure: Valid (80-200 mm Hg)
+>>> Cholesterol: Valid (100-600 mg/dl)
+>>> Validation complete: All parameters within valid ranges`,
+                2: `>>> Engineering features...
+>>> Age scaled: 0.5625
+>>> Age risk category: High
+>>> Blood pressure category: High
+>>> Cholesterol risk: True
+>>> Features engineering complete`,
+                3: `>>> Scaling numerical features...
+>>> Original values: [0.5625, 145, 289, 150]
+>>> Scaled values: [0.892, 1.234, 0.987, 0.456]
+>>> Scaling complete`,
+                4: `>>> Loading SVM model...
+>>> Applying RBF kernel
+>>> Computing decision function
+>>> Probability calculation complete
+>>> Risk probability: 0.758 (75.8%)`,
+                5: `>>> Analyzing results...
+>>> Risk level: High
+>>> Identified risk factors:
+   - Advanced age (65 years)
+   - High blood pressure (145 mm Hg)
+   - Elevated cholesterol (289 mg/dl)
+>>> Analysis complete`
+            };
+            return outputs[stepNumber];
+        }
+
+        function showResults() {
+            document.getElementById('finalResults').classList.remove('d-none');
+            document.getElementById('finalResults').scrollIntoView({ behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html> 

@@ -1,21 +1,21 @@
 /* Medical themed colors */
 :root {
-    --medical-blue: #2c6fb0;
-    --medical-light-blue: #edf2f7;
-    --medical-dark-blue: #1a4971;
-    --medical-green: #4caf50;
-    --medical-red: #dc3545;
-    --medical-gray: #6c757d;
+    --primary-color: #0074D9;
+    --accent-color: #FF4136;
+    --background-color: #F4F4F4;
+    --secondary-accent: #2ECC40;
+    --text-color: #111111;
 }
 
 /* General styles */
 body {
-    background-color: var(--medical-light-blue);
+    background-color: var(--background-color);
+    color: var(--text-color);
 }
 
 /* Navbar customization */
 .navbar {
-    background-color: var(--medical-blue) !important;
+    background-color: var(--primary-color) !important;
     box-shadow: 0 2px 4px rgba(0,0,0,.1);
 }
 
@@ -25,14 +25,15 @@ body {
 
 /* Hero section */
 #home {
-    background-color: var(--medical-blue) !important;
+    background-color: var(--primary-color) !important;
 }
 
 /* Card customization */
 .card {
+    background-color: white;
     border: none;
     transition: transform 0.2s;
-    box-shadow: 0 4px 6px rgba(0,0,0,.05);
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
 }
 
 .card:hover {
@@ -40,18 +41,18 @@ body {
 }
 
 .card-header {
-    border-bottom: 2px solid var(--medical-light-blue);
+    border-bottom: 2px solid var(--background-color);
 }
 
 /* Form styling */
 .form-label {
     font-weight: 500;
-    color: var(--medical-dark-blue);
+    color: var(--primary-color);
 }
 
 .form-control:focus, .form-select:focus {
-    border-color: var(--medical-blue);
-    box-shadow: 0 0 0 0.2rem rgba(44,111,176,.25);
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 0.2rem rgba(0,123,211,.25);
 }
 
 .form-control::placeholder {
@@ -61,15 +62,25 @@ body {
 
 /* Button styling */
 .btn-primary {
-    background-color: var(--medical-blue) !important;
-    border-color: var(--medical-blue) !important;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
 }
 
 .btn-primary:hover {
-    background-color: var(--medical-dark-blue) !important;
-    border-color: var(--medical-dark-blue) !important;
+    background-color: var(--primary-color);
+    border-color: var(--primary-color);
     transform: translateY(-2px);
-    box-shadow: 0 4px 8px rgba(44,111,176,.2);
+    box-shadow: 0 4px 8px rgba(0,123,211,.2);
+}
+
+.btn-danger {
+    background-color: var(--accent-color);
+    border-color: var(--accent-color);
+}
+
+.btn-success {
+    background-color: var(--secondary-accent);
+    border-color: var(--secondary-accent);
 }
 
 /* Custom section spacing */
@@ -89,7 +100,7 @@ section {
 
 /* Progress bar customization */
 .progress {
-    background-color: var(--medical-light-blue);
+    background-color: var(--background-color);
     border-radius: 1rem;
 }
 
@@ -101,29 +112,29 @@ section {
 /* Example value hints */
 .example-hint {
     font-size: 0.85rem;
-    color: var(--medical-gray);
+    color: var(--text-color);
     font-style: italic;
     margin-top: 0.25rem;
 }
 
 /* Field tooltips */
 .field-info {
-    color: var(--medical-blue);
+    color: var(--primary-color);
     cursor: pointer;
     margin-left: 0.5rem;
 }
 
 .field-info:hover {
-    color: var(--medical-dark-blue);
+    color: var(--primary-color);
 }
 
 /* Footer styling */
 footer {
-    background-color: var(--medical-dark-blue) !important;
+    background-color: var(--primary-color) !important;
 }
 
 footer a:hover {
-    color: var(--medical-light-blue) !important;
+    color: var(--background-color) !important;
 }
 
 /* Animation classes */
@@ -144,18 +155,18 @@ footer a:hover {
 
 /* Medical icons customization */
 .medical-icon {
-    color: var(--medical-blue);
+    color: var(--primary-color);
 }
 
 /* Example card styling */
 .example-card {
-    background-color: rgba(44,111,176,.05);
-    border-left: 4px solid var(--medical-blue);
+    background-color: rgba(0,123,211,.05);
+    border-left: 4px solid var(--primary-color);
 }
 
 /* Help text */
 .help-text {
-    color: var(--medical-gray);
+    color: var(--text-color);
     font-size: 0.9rem;
     margin-top: 0.25rem;
 }
@@ -202,4 +213,302 @@ footer a:hover {
 .list-unstyled li {
     margin-bottom: 0.5rem;
     font-size: 0.95rem;
+}
+
+/* Custom chart colors */
+.chart-colors {
+    --chart-primary: var(--primary-color);
+    --chart-accent: var(--accent-color);
+    --chart-secondary: var(--secondary-accent);
+}
+
+/* Process step styling */
+.process-step {
+    padding: 2rem;
+    margin-bottom: 2rem;
+    background-color: white;
+    border-radius: 0.5rem;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.process-step h3 {
+    color: var(--primary-color);
+    margin-bottom: 1.5rem;
+}
+
+/* Badge styling */
+.badge {
+    padding: 0.5em 1em;
+}
+
+/* List group item styling */
+.list-group-item {
+    border-color: rgba(0,0,0,0.1);
+}
+
+/* Text colors */
+.text-primary {
+    color: var(--primary-color) !important;
+}
+
+.text-danger {
+    color: var(--accent-color) !important;
+}
+
+.text-success {
+    color: var(--secondary-accent) !important;
+}
+
+/* Border colors */
+.border-primary {
+    border-color: var(--primary-color) !important;
+}
+
+.border-danger {
+    border-color: var(--accent-color) !important;
+}
+
+.border-success {
+    border-color: var(--secondary-accent) !important;
+}
+
+/* Background colors */
+.bg-primary {
+    background-color: var(--primary-color) !important;
+}
+
+.bg-danger {
+    background-color: var(--accent-color) !important;
+}
+
+.bg-success {
+    background-color: var(--secondary-accent) !important;
+}
+
+/* Chart containers */
+.chart-container {
+    position: relative;
+    height: 300px;
+    margin: 1rem 0;
+}
+
+/* Social links */
+.social-links a {
+    text-decoration: none;
+    transition: opacity 0.2s ease;
+}
+
+.social-links a:hover {
+    opacity: 0.8;
+}
+
+/* Table styles */
+.table-responsive {
+    margin-bottom: 0;
+}
+
+/* Risk progress */
+.risk-progress {
+    height: 20px;
+}
+
+/* Risk score display */
+.risk-score {
+    font-size: 2.5rem;
+    font-weight: bold;
+    color: var(--primary-color);
+}
+
+/* Risk description */
+.risk-description {
+    margin-bottom: 0.5rem;
+}
+
+.risk-interpretation {
+    margin-bottom: 0;
+    font-size: 0.875rem;
+}
+
+/* Prediction Process Visualization */
+.timeline-container {
+    position: relative;
+    padding: 20px 0;
+}
+
+.process-step {
+    display: flex;
+    margin-bottom: 30px;
+    opacity: 0.7;
+    transition: all 0.3s ease;
+}
+
+.process-step.completed {
+    opacity: 1;
+}
+
+.step-icon {
+    width: 50px;
+    height: 50px;
+    background-color: var(--primary-color);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+    color: white;
+    font-size: 1.2rem;
+}
+
+.step-content {
+    flex: 1;
+    background: white;
+    padding: 15px;
+    border-radius: 8px;
+    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+}
+
+.step-details {
+    margin-top: 10px;
+}
+
+.step-details .progress {
+    height: 10px;
+    border-radius: 5px;
+    background-color: #e9ecef;
+    margin-top: 10px;
+}
+
+.step-details .progress-bar {
+    background-color: var(--primary-color);
+    transition: width 0.5s ease;
+}
+
+/* Feature Importance Visualization */
+.feature-bars {
+    margin-top: 20px;
+}
+
+.feature-bar {
+    background: #f8f9fa;
+    padding: 15px;
+    margin-bottom: 10px;
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+}
+
+.feature-bar .bar {
+    height: 20px;
+    background: var(--primary-color);
+    border-radius: 10px;
+    transition: width 0.5s ease;
+}
+
+.feature-bar .label {
+    min-width: 150px;
+    margin-right: 15px;
+}
+
+.feature-bar .value {
+    margin-left: 10px;
+    font-weight: 500;
+}
+
+/* Backend Process Visualization */
+.process-container {
+    max-width: 1000px;
+    margin: 0 auto;
+}
+
+.process-step {
+    opacity: 0.7;
+    transition: opacity 0.3s ease;
+}
+
+.process-step.active {
+    opacity: 1;
+}
+
+.step-header {
+    display: flex;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.status-badge {
+    margin-left: auto;
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background-color: #e9ecef;
+    transition: all 0.3s ease;
+}
+
+.status-badge.processing {
+    background-color: var(--primary-color);
+    animation: pulse 1s infinite;
+}
+
+.status-badge.completed {
+    background-color: var(--secondary-accent);
+}
+
+@keyframes pulse {
+    0% { transform: scale(1); }
+    50% { transform: scale(1.2); }
+    100% { transform: scale(1); }
+}
+
+.output-console {
+    background: #1e1e1e;
+    border-radius: 5px;
+    padding: 1rem;
+    margin-top: 1rem;
+    font-family: 'Consolas', monospace;
+}
+
+.console-header {
+    color: #569cd6;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.console-content {
+    color: #d4d4d4;
+    white-space: pre-wrap;
+    font-size: 0.9rem;
+    line-height: 1.4;
+}
+
+.risk-factors-list {
+    list-style: none;
+    padding: 0;
+}
+
+.risk-factors-list li {
+    padding: 0.5rem 0;
+    border-bottom: 1px solid #e9ecef;
+    color: var(--text-color);
+}
+
+.risk-factors-list li:last-child {
+    border-bottom: none;
+}
+
+.result-item {
+    padding: 1.5rem;
+    background: #f8f9fa;
+    border-radius: 8px;
+}
+
+/* Code highlighting customization */
+pre[class*="language-"] {
+    background: #1e1e1e !important;
+    border-radius: 5px;
+    margin: 0 !important;
+}
+
+code[class*="language-"] {
+    font-size: 0.9rem !important;
+    line-height: 1.4 !important;
 }

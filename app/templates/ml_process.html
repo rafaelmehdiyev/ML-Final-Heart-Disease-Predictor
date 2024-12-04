@@ -8,29 +8,8 @@
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
     <!-- Font Awesome -->
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-    <!-- Prism.js for code highlighting -->
-    <link href="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/themes/prism.min.css" rel="stylesheet" />
     <!-- Custom CSS -->
     <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
-    <style>
-        .process-step {
-            border-left: 3px solid #0d6efd;
-            padding-left: 20px;
-            margin-bottom: 30px;
-        }
-        .code-block {
-            background: #f8f9fa;
-            border-radius: 5px;
-            padding: 15px;
-            margin: 10px 0;
-        }
-        .metric-card {
-            transition: transform 0.3s ease;
-        }
-        .metric-card:hover {
-            transform: translateY(-5px);
-        }
-    </style>
 </head>
 <body class="bg-light">
     <!-- Navigation -->
@@ -56,8 +35,8 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="/statistics">
-                            <i class="fas fa-chart-line me-1"></i> Statistics
+                        <a class="nav-link" href="/prediction-process">
+                            <i class="fas fa-cogs me-1"></i> Prediction Demo
                         </a>
                     </li>
                 </ul>
@@ -68,191 +47,244 @@
     <div class="container py-5">
         <!-- Header Section -->
         <div class="text-center mb-5">
-            <h1 class="display-4 mb-3">Machine Learning Process</h1>
-            <p class="lead text-muted">Understanding the Heart Disease Prediction Model</p>
+            <h1 class="display-4 mb-3">Support Vector Machine for Heart Disease Prediction</h1>
+            <p class="lead text-muted">An Advanced Machine Learning Approach to Early Detection</p>
+            <div class="row justify-content-center">
+                <div class="col-md-8">
+                    <div class="alert alert-primary" role="alert">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Our model uses Support Vector Machine (SVM) with RBF kernel to achieve high accuracy in heart disease prediction,
+                        demonstrating the power of machine learning in medical diagnostics.
+                    </div>
+                </div>
+            </div>
         </div>
 
-        <!-- Model Performance Overview -->
+        <!-- Model Architecture -->
         <div class="row mb-5">
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm metric-card">
-                    <div class="card-body text-center">
-                        <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
-                        <h5 class="card-title">Accuracy</h5>
-                        <h2 class="mb-0">{{ metrics.accuracy }}%</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm metric-card">
-                    <div class="card-body text-center">
-                        <i class="fas fa-check-circle fa-3x text-success mb-3"></i>
-                        <h5 class="card-title">Precision</h5>
-                        <h2 class="mb-0">{{ metrics.precision }}%</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm metric-card">
-                    <div class="card-body text-center">
-                        <i class="fas fa-search fa-3x text-info mb-3"></i>
-                        <h5 class="card-title">Recall</h5>
-                        <h2 class="mb-0">{{ metrics.recall }}%</h2>
-                    </div>
-                </div>
-            </div>
-            <div class="col-md-3">
-                <div class="card h-100 border-0 shadow-sm metric-card">
-                    <div class="card-body text-center">
-                        <i class="fas fa-balance-scale fa-3x text-warning mb-3"></i>
-                        <h5 class="card-title">F1 Score</h5>
-                        <h2 class="mb-0">{{ metrics.f1_score }}%</h2>
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-microchip text-primary me-2"></i>
+                            Model Architecture
+                        </h3>
+                        <div class="row g-4">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">SVM Configuration</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <i class="fas fa-cog text-primary me-2"></i>
+                                        <strong>Algorithm:</strong> Support Vector Machine
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-wave-square text-primary me-2"></i>
+                                        <strong>Kernel:</strong> Radial Basis Function (RBF)
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-sliders-h text-primary me-2"></i>
+                                        <strong>Hyperparameters:</strong>
+                                        <ul class="mt-2">
+                                            <li>C (Regularization): {{ model_params.C }}</li>
+                                            <li>Gamma: {{ model_params.gamma }}</li>
+                                        </ul>
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Training Strategy</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <i class="fas fa-random text-primary me-2"></i>
+                                        <strong>Data Split:</strong> 80% Training, 20% Testing
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-sync text-primary me-2"></i>
+                                        <strong>Cross-validation:</strong> 5-Fold CV
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-balance-scale text-primary me-2"></i>
+                                        <strong>Class Balance:</strong> Weighted Classes
+                                    </li>
+                                </ul>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
 
-        <!-- ML Process Steps -->
-        <div class="row">
+        <!-- Model Performance -->
+        <div class="row mb-5">
             <div class="col-12">
-                <!-- Data Collection -->
-                <div class="process-step">
-                    <h3><i class="fas fa-database text-primary me-2"></i>1. Data Collection</h3>
-                    <p class="lead">Our dataset contains {{ dataset_info.total_samples }} patient records with {{ dataset_info.features }} features.</p>
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body">
-                            <h5>Key Features:</h5>
-                            <ul class="list-group list-group-flush">
-                                {% for feature in dataset_info.key_features %}
-                                <li class="list-group-item">
-                                    <strong>{{ feature.name }}</strong>: {{ feature.description }}
-                                </li>
-                                {% endfor %}
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Data Preprocessing -->
-                <div class="process-step">
-                    <h3><i class="fas fa-broom text-primary me-2"></i>2. Data Preprocessing</h3>
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body">
-                            <h5>Steps Taken:</h5>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <i class="fas fa-check-circle text-success me-2"></i>
-                                    <strong>Handling Missing Values:</strong> {{ preprocessing.missing_values }}
-                                </li>
-                                <li class="list-group-item">
-                                    <i class="fas fa-check-circle text-success me-2"></i>
-                                    <strong>Feature Scaling:</strong> {{ preprocessing.scaling }}
-                                </li>
-                                <li class="list-group-item">
-                                    <i class="fas fa-check-circle text-success me-2"></i>
-                                    <strong>Feature Engineering:</strong> {{ preprocessing.feature_engineering }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Model Selection -->
-                <div class="process-step">
-                    <h3><i class="fas fa-robot text-primary me-2"></i>3. Model Selection</h3>
-                    <p>We evaluated several machine learning algorithms to find the best performer:</p>
-                    <div class="row">
-                        {% for model in model_comparison %}
-                        <div class="col-md-4 mb-4">
-                            <div class="card h-100 border-0 shadow-sm">
-                                <div class="card-body">
-                                    <h5 class="card-title">{{ model.name }}</h5>
-                                    <p class="card-text">Accuracy: {{ model.accuracy }}%</p>
-                                    <p class="card-text"><small class="text-muted">{{ model.description }}</small></p>
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-chart-line text-primary me-2"></i>
+                            Model Performance
+                        </h3>
+                        <div class="row g-4">
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-bullseye fa-3x text-primary mb-3"></i>
+                                        <h5>Accuracy</h5>
+                                        <h2 class="mb-0">78.18%</h2>
+                                        <small class="text-muted">Test Set Performance</small>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        {% endfor %}
-                    </div>
-                </div>
-
-                <!-- Model Training -->
-                <div class="process-step">
-                    <h3><i class="fas fa-cogs text-primary me-2"></i>4. Model Training</h3>
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body">
-                            <h5>Training Process:</h5>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <strong>Training Set Size:</strong> {{ training.train_size }}%
-                                </li>
-                                <li class="list-group-item">
-                                    <strong>Validation Set Size:</strong> {{ training.val_size }}%
-                                </li>
-                                <li class="list-group-item">
-                                    <strong>Test Set Size:</strong> {{ training.test_size }}%
-                                </li>
-                                <li class="list-group-item">
-                                    <strong>Cross-Validation:</strong> {{ training.cross_validation }}
-                                </li>
-                            </ul>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- Model Evaluation -->
-                <div class="process-step">
-                    <h3><i class="fas fa-chart-bar text-primary me-2"></i>5. Model Evaluation</h3>
-                    <div class="row">
-                        <div class="col-md-6 mb-4">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">Confusion Matrix</h5>
-                                    <div id="confusionMatrix"></div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-chart-area fa-3x text-success mb-3"></i>
+                                        <h5>ROC AUC</h5>
+                                        <h2 class="mb-0">86.92%</h2>
+                                        <small class="text-muted">Classification Quality</small>
+                                    </div>
                                 </div>
                             </div>
-                        </div>
-                        <div class="col-md-6 mb-4">
-                            <div class="card border-0 shadow-sm h-100">
-                                <div class="card-body">
-                                    <h5 class="card-title">ROC Curve</h5>
-                                    <div id="rocCurve"></div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-check-double fa-3x text-info mb-3"></i>
+                                        <h5>CV Score</h5>
+                                        <h2 class="mb-0">84.24%</h2>
+                                        <small class="text-muted">±2.20% (5-Fold)</small>
+                                    </div>
+                                </div>
+                            </div>
+                            <div class="col-md-3">
+                                <div class="card border-0 shadow-sm h-100">
+                                    <div class="card-body text-center">
+                                        <i class="fas fa-balance-scale fa-3x text-warning mb-3"></i>
+                                        <h5>F1 Score</h5>
+                                        <h2 class="mb-0">82.5%</h2>
+                                        <small class="text-muted">Balanced Performance</small>
+                                    </div>
                                 </div>
                             </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Feature Importance -->
-                <div class="process-step">
-                    <h3><i class="fas fa-weight-hanging text-primary me-2"></i>6. Feature Importance</h3>
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body">
-                            <div id="featureImportance"></div>
+        <!-- Feature Engineering -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-tools text-primary me-2"></i>
+                            Feature Engineering
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Preprocessing Steps</h5>
+                                <ul class="list-group">
+                                    <li class="list-group-item">
+                                        <i class="fas fa-broom text-primary me-2"></i>
+                                        <strong>Data Cleaning:</strong> Automated preprocessing pipeline
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-ruler text-primary me-2"></i>
+                                        <strong>Scaling:</strong> StandardScaler for numerical features
+                                    </li>
+                                    <li class="list-group-item">
+                                        <i class="fas fa-code-branch text-primary me-2"></i>
+                                        <strong>Encoding:</strong> Categorical variables transformation
+                                    </li>
+                                </ul>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Feature Importance</h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Feature</th>
+                                                <th>Correlation</th>
+                                                <th>Impact</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            {% for feature, corr in correlations.items() %}
+                                            <tr>
+                                                <td>{{ feature|title }}</td>
+                                                <td>{{ "%.3f"|format(corr) }}</td>
+                                                <td>
+                                                    <span class="badge {% if corr|abs >= 0.3 %}bg-danger{% elif corr|abs >= 0.2 %}bg-warning{% else %}bg-success{% endif %}">
+                                                        {% if corr|abs >= 0.3 %}High{% elif corr|abs >= 0.2 %}Medium{% else %}Low{% endif %}
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                            {% endfor %}
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
                         </div>
                     </div>
                 </div>
+            </div>
+        </div>
 
-                <!-- Model Deployment -->
-                <div class="process-step">
-                    <h3><i class="fas fa-rocket text-primary me-2"></i>7. Model Deployment</h3>
-                    <div class="card border-0 shadow-sm mb-4">
-                        <div class="card-body">
-                            <h5>Deployment Details:</h5>
-                            <ul class="list-group list-group-flush">
-                                <li class="list-group-item">
-                                    <i class="fas fa-server me-2"></i>
-                                    <strong>Platform:</strong> {{ deployment.platform }}
-                                </li>
-                                <li class="list-group-item">
-                                    <i class="fas fa-clock me-2"></i>
-                                    <strong>Average Response Time:</strong> {{ deployment.response_time }}
-                                </li>
-                                <li class="list-group-item">
-                                    <i class="fas fa-shield-alt me-2"></i>
-                                    <strong>Security Measures:</strong> {{ deployment.security }}
-                                </li>
-                            </ul>
+        <!-- Model Validation -->
+        <div class="row mb-5">
+            <div class="col-12">
+                <div class="card border-0 shadow-sm">
+                    <div class="card-body">
+                        <h3 class="card-title mb-4">
+                            <i class="fas fa-check-circle text-primary me-2"></i>
+                            Model Validation
+                        </h3>
+                        <div class="row">
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Classification Report</h5>
+                                <div class="table-responsive">
+                                    <table class="table">
+                                        <thead>
+                                            <tr>
+                                                <th>Class</th>
+                                                <th>Precision</th>
+                                                <th>Recall</th>
+                                                <th>F1-Score</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td>No Disease (0)</td>
+                                                <td>0.64</td>
+                                                <td>0.82</td>
+                                                <td>0.72</td>
+                                            </tr>
+                                            <tr>
+                                                <td>Disease (1)</td>
+                                                <td>0.89</td>
+                                                <td>0.76</td>
+                                                <td>0.82</td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="col-md-6">
+                                <h5 class="mb-3">Statistical Tests</h5>
+                                <ul class="list-group">
+                                    {% for test_name, test_result in statistical_tests.items() %}
+                                    <li class="list-group-item d-flex justify-content-between align-items-center">
+                                        {{ test_name|replace('_', ' ')|title }}
+                                        <span>
+                                            p-value: {{ "%.4f"|format(test_result.p_value) }}
+                                            {% if test_result.significant %}
+                                            <span class="badge bg-success ms-2">Significant</span>
+                                            {% endif %}
+                                        </span>
+                                    </li>
+                                    {% endfor %}
+                                </ul>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -266,10 +298,10 @@
             <div class="row">
                 <div class="col-md-6">
                     <h5>Heart Disease Predictor</h5>
-                    <p>A machine learning approach to heart disease prediction</p>
+                    <p>Machine Learning Final Project</p>
                 </div>
                 <div class="col-md-6 text-md-end">
-                    <p>Created with <i class="fas fa-heart text-danger"></i> by Your Team</p>
+                    <p>Powered by Support Vector Machine</p>
                 </div>
             </div>
         </div>
@@ -277,8 +309,5 @@
 
     <!-- Scripts -->
     <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/js/bootstrap.bundle.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/prism/1.24.1/prism.min.js"></script>
-    <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
-    <script src="{{ url_for('static', filename='js/ml_process.js') }}"></script>
 </body>
 </html>

@@ -41,8 +41,13 @@
                         </a>
                     </li>
                     <li class="nav-item">
-                        <a class="nav-link" href="#about">
-                            <i class="fas fa-info-circle me-1"></i> <span data-translate="about">About</span>
+                        <a class="nav-link" href="/ml-process">
+                            <i class="fas fa-brain me-1"></i> <span data-translate="mlProcess">ML Process</span>
+                        </a>
+                    </li>
+                    <li class="nav-item">
+                        <a class="nav-link" href="/prediction-process">
+                            <i class="fas fa-cogs me-1"></i> <span>Prediction Demo</span>
                         </a>
                     </li>
                     <!-- Language Switcher -->
@@ -65,18 +70,18 @@
     <section id="home" class="py-5 bg-primary text-white">
         <div class="container">
             <div class="row align-items-center">
-                <div class="col-lg-6">
-                    <h1 class="display-4 fw-bold mb-4" data-translate="heroTitle">Predict Heart Disease Risk</h1>
-                    <p class="lead mb-4" data-translate="heroDescription">
-                        Using advanced machine learning to help you understand your heart health better.
-                        Get instant risk assessment based on your medical parameters.
+                <div class="col-lg-8">
+                    <h1 class="display-4 fw-bold mb-4">Machine Learning Final Project</h1>
+                    <p class="lead mb-4">
+                        Rafael Mehdiyev<br>
+                        BHOS
                     </p>
                     <a href="#prediction" class="btn btn-light btn-lg px-4">
                         <i class="fas fa-arrow-right me-2"></i>
                         <span data-translate="startAssessment">Start Assessment</span>
                     </a>
                 </div>
-                <div class="col-lg-6">
+                <div class="col-lg-4">
                     <div class="text-center">
                         <i class="fas fa-heart-pulse text-white" style="font-size: 200px;"></i>
                     </div>
@@ -395,32 +400,38 @@
             </h4>
             
             <!-- Basic Stats Cards -->
-            <div class="row g-4 mb-4">
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center">
-                            <h6 class="card-title text-muted mb-3" data-translate="totalPatients">Total Patients</h6>
-                            <h3 class="card-text text-primary mb-0" id="totalPatients">1371</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center">
-                            <h6 class="card-title text-muted mb-3" data-translate="diseaseRate">Disease Rate</h6>
-                            <h3 class="card-text text-danger mb-0" id="diseaseRate">57.1%</h3>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-md-4">
-                    <div class="card h-100 shadow-sm">
-                        <div class="card-body text-center">
-                            <h6 class="card-title text-muted mb-3" data-translate="averageAge">Average Age</h6>
-                            <h3 class="card-text text-success mb-0" id="averageAge">54.1</h3>
-                        </div>
-                    </div>
-                </div>
+<div class="row g-4 mb-4">
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm metric-card">
+            <div class="card-body text-center">
+                <i class="fas fa-users fa-3x text-primary mb-3"></i>
+                <h6 class="card-title text-muted mb-2" data-translate="totalPatients">Total Patients</h6>
+                <h3 class="card-text text-accent mb-0" id="totalPatients">1,371</h3>
+                <small class="text-muted">Dataset Size</small>
             </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm metric-card">
+            <div class="card-body text-center">
+                <i class="fas fa-heartbeat fa-3x text-primary mb-3"></i>
+                <h6 class="card-title text-muted mb-2" data-translate="diseaseRate">Disease Rate</h6>
+                <h3 class="card-text text-secondary-accent mb-0" id="diseaseRate">57.1%</h3>
+                <small class="text-muted">Positive Cases</small>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-4">
+        <div class="card h-100 shadow-sm metric-card">
+            <div class="card-body text-center">
+                <i class="fas fa-calendar-alt fa-3x text-primary mb-3"></i>
+                <h6 class="card-title text-muted mb-2" data-translate="averageAge">Average Age</h6>
+                <h3 class="card-text text-accent mb-0" id="averageAge">54.1</h3>
+                <small class="text-muted">Years</small>
+            </div>
+        </div>
+    </div>
+</div>
 
             <!-- Charts Section -->
             <div class="row">
@@ -457,81 +468,40 @@
                         Feature Correlations
                     </h5>
                     <div id="correlationsContent">
-                        <!-- Correlation analysis will be loaded here -->
+                        <div class="table-responsive">
+                            <table class="table table-hover">
+                                <thead>
+                                    <tr>
+                                        <th>Feature</th>
+                                        <th>Correlation</th>
+                                        <th>Impact</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    {% for feature, correlation in correlations.items() %}
+                                    <tr>
+                                        <td>{{ feature }}</td>
+                                        <td>{{ "%.3f"|format(correlation) }}</td>
+                                        <td>
+                                            {% if correlation|abs >= 0.3 %}
+                                                <span class="badge bg-danger">High Risk</span>
+                                            {% elif correlation|abs >= 0.2 %}
+                                                <span class="badge bg-warning text-dark">Moderate Risk</span>
+                                            {% else %}
+                                                <span class="badge bg-success">Low Risk</span>
+                                            {% endif %}
+                                        </td>
+                                    </tr>
+                                    {% endfor %}
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     </div>
 </section>
-
-        <!-- About Section -->
-        <section id="about" class="mb-5">
-            <div class="card shadow-lg border-0 rounded-3">
-                <div class="card-header bg-white py-3">
-                    <h3 class="card-title mb-0" data-translate="aboutTheProject">
-                        <i class="fas fa-info-circle text-primary me-2"></i>
-                        About the Project
-                    </h3>
-                </div>
-                <div class="card-body">
-                    <div class="row g-4">
-                        <div class="col-lg-8">
-                            <h4 data-translate="howItWorks">How it Works</h4>
-                            <p class="lead" data-translate="projectDescription">
-                                Our heart disease prediction system leverages advanced machine learning algorithms
-                                to assess your risk of heart disease based on various medical parameters.
-                            </p>
-                            <p data-translate="projectDescription2">
-                                The system has been trained on extensive medical data and provides predictions
-                                with associated confidence scores to help you understand your heart health better.
-                            </p>
-                            
-                            <div class="alert alert-info mt-4">
-                                <h5 class="alert-heading" data-translate="importantNotice">
-                                    <i class="fas fa-exclamation-circle me-2"></i>
-                                    Important Notice
-                                </h5>
-                                <p class="mb-0" data-translate="importantNoticeDescription">
-                                    This tool is for educational and informational purposes only. It should not
-                                    be used as a substitute for professional medical advice, diagnosis, or treatment.
-                                    Always seek the advice of your physician or other qualified health provider.
-                                </p>
-                            </div>
-                        </div>
-                        <div class="col-lg-4">
-                            <div class="card bg-light border-0">
-                                <div class="card-body">
-                                    <h5 class="card-title" data-translate="features">Features</h5>
-                                    <ul class="list-unstyled">
-                                        <li class="mb-2">
-                                            <i class="fas fa-check-circle text-success me-2"></i>
-                                            <span data-translate="instantRiskAssessment">Instant Risk Assessment</span>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="fas fa-check-circle text-success me-2"></i>
-                                            <span data-translate="confidenceScoring">Confidence Scoring</span>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="fas fa-check-circle text-success me-2"></i>
-                                            <span data-translate="medicalRecommendations">Medical Recommendations</span>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="fas fa-check-circle text-success me-2"></i>
-                                            <span data-translate="statisticalAnalysis">Statistical Analysis</span>
-                                        </li>
-                                        <li class="mb-2">
-                                            <i class="fas fa-check-circle text-success me-2"></i>
-                                            <span data-translate="userFriendlyInterface">User-Friendly Interface</span>
-                                        </li>
-                                    </ul>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </div>
-            </div>
-        </section>
     </div>
 
     <!-- Footer -->
@@ -565,12 +535,5 @@
 <script src="{{ url_for('static', filename='js/translations.js') }}"></script>
 <!-- Custom JS -->
 <script src="{{ url_for('static', filename='js/main.js') }}"></script>
-<script>
-    // Initialize tooltips
-    var tooltipTriggerList = [].slice.call(document.querySelectorAll('[data-bs-toggle="tooltip"]'))
-    var tooltipList = tooltipTriggerList.map(function (tooltipTriggerEl) {
-        return new bootstrap.Tooltip(tooltipTriggerEl)
-    })
-</script>
 </body>
 </html>

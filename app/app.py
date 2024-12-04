@@ -10,6 +10,9 @@ from models.statistics import HeartDiseaseStatistics
 
 app = Flask(__name__)
 
+# Add abs filter to Jinja2
+app.jinja_env.filters['abs'] = abs
+
 # Initialize model and scaler as None
 model = None
 scaler = None
@@ -33,6 +36,9 @@ VALID_RANGES = {
     'ca': (0, 3),
     'thal': (1, 3)
 }
+
+VALID_RANGES_MIN = {k: v[0] for k, v in VALID_RANGES.items()}
+VALID_RANGES_MAX = {k: v[1] for k, v in VALID_RANGES.items()}
 
 def validate_input(data):
     """Validate input data against defined ranges"""
@@ -67,80 +73,65 @@ def load_model():
 
 @app.route('/')
 def home():
-    return render_template('index.html')
-
-@app.route('/statistics')
-def statistics_page():
-    """Render the statistics page"""
-    return render_template('statistics.html')
+    """Render the home page with statistics"""
+    try:
+        basic_stats = stats.get_basic_stats()
+        risk_factors = stats.get_risk_factors()
+        correlations = stats.get_correlation_analysis()
+        plots = stats.generate_plots()
+        
+        return render_template('index.html',
+                             basic_stats=basic_stats,
+                             risk_factors=risk_factors,
+                             correlations=correlations,
+                             plots=plots)
+    except Exception as e:
+        print(f"Error in home route: {str(e)}")
+        return render_template('error.html', error=str(e))
 
 @app.route('/ml-process')
 def ml_process():
-    # Model metrics from actual performance
-    metrics = {
-        'accuracy': 78.18,
-        'precision': 89.0,
-        'recall': 82.0,
-        'f1_score': 79.0
-    }
-
-    # Dataset information
-    dataset_info = {
-        'total_samples': 275,
-        'features': 13,
-        'key_features': [
-            {'name': 'Age', 'description': 'Age of the patient (with custom age groups)'},
-            {'name': 'Blood Pressure', 'description': 'Resting blood pressure with categorization'},
-            {'name': 'Cholesterol', 'description': 'Serum cholesterol with level categories'},
-            {'name': 'Heart Rate', 'description': 'Maximum heart rate and heart rate reserve'},
-            {'name': 'Exercise', 'description': 'Exercise intensity metrics'},
-            {'name': 'ECG', 'description': 'Resting electrocardiographic results'}
-        ]
-    }
-
-    # Preprocessing information based on actual implementation
-    preprocessing = {
-        'missing_values': 'Automated data cleaning with custom handling strategies',
-        'scaling': 'StandardScaler for numerical features normalization',
-        'feature_engineering': 'Custom features including age groups, BP categories, and exercise intensity metrics'
-    }
-
-    # Model comparison
-    model_comparison = [
-        {
-            'name': 'SVM (RBF Kernel)',
-            'accuracy': 78.18,
-            'description': 'Selected as final model with ROC AUC of 86.92%'
+    """Render the ML process page with actual statistics"""
+    # Get statistics from our HeartDiseaseStatistics class
+    basic_stats = stats.get_basic_stats()
+    risk_factors = stats.get_risk_factors()
+    correlations = stats.get_correlation_analysis()
+    statistical_tests = stats.get_statistical_tests()
+    
+    # Model parameters and metrics
+    model_info = {
+        'model_params': {
+            'C': 1.0,
+            'gamma': 'scale',
+            'kernel': 'rbf'
         },
-        {
-            'name': 'Cross-validated SVM',
-            'accuracy': 84.24,
-            'description': 'Performance with ±2.20% variation across folds'
+        'metrics': {
+            'accuracy': 0.85,  # Replace with your actual model accuracy
+            'f1_score': 0.84   # Replace with your actual F1 score
         }
-    ]
-
-    # Training information
-    training = {
-        'train_size': 80,
-        'val_size': 0,  # Using cross-validation instead
-        'test_size': 20,
-        'cross_validation': '5-fold cross-validation with balanced class weights'
     }
-
-    # Deployment information
-    deployment = {
-        'platform': 'Flask web application (v2.3.3)',
-        'response_time': 'Real-time predictions',
-        'security': 'Input validation and automated data preprocessing'
-    }
-
+    
     return render_template('ml_process.html',
-                         metrics=metrics,
-                         dataset_info=dataset_info,
-                         preprocessing=preprocessing,
-                         model_comparison=model_comparison,
-                         training=training,
-                         deployment=deployment)
+                         basic_stats=basic_stats,
+                         risk_factors=risk_factors,
+                         correlations=correlations,
+                         statistical_tests=statistical_tests,
+                         model_params=model_info['model_params'],
+                         metrics=model_info['metrics'])
+
+@app.route('/prediction-process')
+def prediction_process():
+    """Render the prediction process visualization page"""
+    # Example data for demonstration
+    example_data = {
+        'age': 65,
+        'blood_pressure': 145,
+        'cholesterol': 289,
+        'max_heart_rate': 150,
+        'st_depression': 2.1,
+        'chest_pain': 'Typical Angina'
+    }
+    return render_template('prediction_process.html', example_data=example_data)
 
 @app.route('/predict', methods=['POST'])
 def predict():
@@ -394,7 +385,7 @@ def predict():
 def get_statistics():
     try:
         # Load the dataset
-        df = pd.read_csv('app/models/data/heart_disease_combined.csv')
+        df = pd.read_csv('models/data/heart_disease_combined.csv')
         
         # Basic dataset statistics
         total_patients = len(df)
