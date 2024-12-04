@@ -180,6 +180,3 @@ weighted avg       0.81      0.78      0.79       275
 Rafael Mehdiyev
 Baku Higher Oil School
 
-## License
-
-This project is licensed under the MIT License - see the LICENSE file for details.
